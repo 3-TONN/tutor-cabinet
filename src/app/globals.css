@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Токены: светлая тема */
+:root {
+  --ink: 0 0 0;
+  --paper: 255 255 255;
+  --surface: 255 255 255;
+  --mist: 242 242 242;
+  --line: 227 227 227;
+  --graphite: 107 107 107;
+  --signal: 217 45 32;
+  color-scheme: light;
+}
+/* Тёмная тема: не чистый белый на чёрном — меньше утомляет глаза */
+.dark {
+  --ink: 237 237 237;
+  --paper: 0 0 0;
+  --surface: 17 17 17;
+  --mist: 28 28 28;
+  --line: 42 42 42;
+  --graphite: 160 160 160;
+  --signal: 255 107 94;
+  color-scheme: dark;
+}
+
+html, body { -webkit-tap-highlight-color: transparent; }
+body {
+  @apply bg-paper text-ink antialiased;
+  font-feature-settings: "ss01", "cv11";
+}
+::selection { background: rgb(var(--ink)); color: rgb(var(--paper)); }
+.tabular-nums { font-variant-numeric: tabular-nums; }
+.num { @apply font-mono tabular-nums; letter-spacing: -0.02em; }
+
+/* Видимый фокус с клавиатуры (WCAG 2.4.7) */
+:focus-visible { outline: 2px solid rgb(var(--ink)); outline-offset: 2px; border-radius: 6px; }
+
+/* Штриховка — «в процессе» на карте тем */
+.hatch {
+  background-image: repeating-linear-gradient(135deg, rgb(var(--ink) / 0.55) 0 1.5px, transparent 1.5px 6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white !important; color: black !important; }
+  .print-area { box-shadow: none !important; border: none !important; padding: 0 !important; }
+  main { padding: 0 !important; margin: 0 !important; }
+  @page { margin: 16mm; }
+}

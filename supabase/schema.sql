@@ -211,11 +211,12 @@ language sql stable security definer set search_path = public as $$
   select distinct s.tutor_id from public.students s where s.id in (select public.my_student_ids())
 $$;
 
--- роль: репетитор (есть свои настройки или нет привязки к ученикам) / ученик
+-- роль: репетитор — у кого есть свои ученики; иначе, если e-mail указан в карточке ученика, — ученик/родитель.
+-- Так ученик, зарегистрировавшийся раньше, чем репетитор вписал его e-mail, не застревает в роли репетитора.
 create or replace function public.my_role() returns text
 language sql stable security definer set search_path = public as $$
   select case
-    when exists (select 1 from public.settings where id = auth.uid()) then 'tutor'
+    when exists (select 1 from public.students where tutor_id = auth.uid()) then 'tutor'
     when exists (select 1 from public.my_student_ids()) then 'student'
     else 'tutor' end
 $$;

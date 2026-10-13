@@ -36,6 +36,18 @@ interface Store {
 
 const Ctx = createContext<Store | null>(null);
 
+/** Повтор запроса при сбое сети (до 3 попыток с паузой) */
+async function withRetry<T>(fn: () => Promise<T>, tries = 3): Promise<T> {
+  for (let i = 1; ; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (i >= tries) throw e;
+      await new Promise((r) => setTimeout(r, 400 * i));
+    }
+  }
+}
+
 export const useStore = () => {
   const c = useContext(Ctx);
   if (!c) throw new Error("useStore outside provider");
@@ -70,7 +82,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), kind === "error" ? 6000 : 3000);
   }, []);
 
-  const init = useCallback(async (b: Backend, r: Role = "tutor") => {
+  /** alive() === false — пока шла загрузка, начался более новый вход: результат устарел и отбрасывается */
+  const init = useCallback(async (b: Backend, r: Role = "tutor", alive: () => boolean = () => true) => {
     try {
       setStatus("loading");
       let data = await b.loadAll();
@@ -86,11 +99,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         }
         data = await b.loadAll();
       }
+      if (!alive()) return;
       setDb(data);
       setBackend(b);
       setRole(r);
       setStatus("ready");
     } catch (e) {
+      if (!alive()) return;
       setError((e as Error).message);
       setStatus("error");
     }
@@ -105,28 +120,50 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       return;
     }
     const sb = supabase();
+    let generation = 0; // номер последнего запуска входа
+    let loadedUser: string | null = null; // чей кабинет уже загружен (или загружается)
+    let disposed = false;
+
     const start = async (s: Session | null) => {
+      if (disposed) return;
       setSession(s);
       if (!s) {
+        generation++;
+        loadedUser = null;
         setBackend(null);
         setDb(emptyDB());
         setStatus("signed_out");
         return;
       }
+      // Supabase повторно сообщает о входе при загрузке страницы и при возврате на вкладку.
+      // Если кабинет этого пользователя уже открыт или открывается — ничего не перезагружаем.
+      if (s.user.id === loadedUser) return;
+      loadedUser = s.user.id;
+      const my = ++generation;
+      const alive = () => !disposed && my === generation;
       const b = new SupabaseBackend(s.user);
       try {
-        const r = await b.role();
-        await init(b, r);
+        const r = await withRetry(() => b.role());
+        if (!alive()) return;
+        await init(b, r, alive);
       } catch (e) {
+        if (!alive()) return;
+        loadedUser = null; // чтобы кнопка «Повторить» и следующий вход могли попробовать снова
         setError((e as Error).message);
         setStatus("error");
       }
     };
+
     sb.auth.getSession().then(({ data }) => start(data.session));
     const { data: sub } = sb.auth.onAuthStateChange((event, s) => {
-      if (event === "SIGNED_IN" || event === "SIGNED_OUT") start(s);
+      // Методы Supabase нельзя вызывать прямо в этом обработчике (возможна взаимоблокировка) — откладываем.
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "INITIAL_SESSION") setTimeout(() => start(s), 0);
+      else if (event === "TOKEN_REFRESHED" || event === "USER_UPDATED") setSession(s);
     });
-    return () => sub.subscription.unsubscribe();
+    return () => {
+      disposed = true;
+      sub.subscription.unsubscribe();
+    };
   }, [init]);
 
   const reload = useCallback(async () => {

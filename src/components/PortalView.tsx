@@ -2,7 +2,7 @@
 
 // Личный кабинет ученика / родителя — только просмотр.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useStore } from "@/lib/store";
 import { homeworkStats, hwEffective, ledger, progress, topicNames } from "@/lib/logic";
 import { fmtDate, fmtTime, rub } from "@/lib/utils";
@@ -12,12 +12,41 @@ import { Icon } from "./Icon";
 import { useTheme } from "./Providers";
 
 type Tab = "home" | "lessons" | "topics" | "grades" | "homework" | "payments";
+const TABS: Tab[] = ["home", "lessons", "topics", "grades", "homework", "payments"];
+
+// Открытая вкладка и выбранный ученик переживают обновление страницы (в пределах вкладки браузера)
+const remembered = (key: string) => {
+  try {
+    return sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+const remember = (key: string, value: string) => {
+  try {
+    sessionStorage.setItem(key, value);
+  } catch {}
+};
 
 export function PortalView({ studentIds, demo, onExit, exitLabel }: { studentIds: string[]; demo?: boolean; onExit: () => void; exitLabel: string }) {
   const { db, settings } = useStore();
   const { theme, setTheme } = useTheme();
-  const [sid, setSid] = useState(studentIds[0] ?? "");
-  const [tab, setTab] = useState<Tab>("home");
+  const [sid, setSid] = useState(() => {
+    const saved = remembered("portal-view-student");
+    return saved && studentIds.includes(saved) ? saved : studentIds[0] ?? "";
+  });
+  const [tab, setTab] = useState<Tab>(() => {
+    const saved = remembered("portal-view-tab") as Tab | null;
+    return saved && TABS.includes(saved) ? saved : "home";
+  });
+  useEffect(() => remember("portal-view-tab", tab), [tab]);
+  useEffect(() => {
+    if (sid) remember("portal-view-student", sid);
+  }, [sid]);
+  // Список доступных учеников мог измениться (например, после повторной загрузки) — держим выбор валидным
+  useEffect(() => {
+    if (studentIds.length && !studentIds.includes(sid)) setSid(studentIds[0]);
+  }, [studentIds, sid]);
   const s = db.students.find((x) => x.id === sid);
   const lg = useMemo(() => (s ? ledger(db, s.id, settings) : null), [db, s, settings]);
 

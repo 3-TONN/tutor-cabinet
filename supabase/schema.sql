@@ -195,6 +195,15 @@ create index if not exists homework_student_idx on public.homework (student_id, 
 create index if not exists student_topics_student_idx on public.student_topics (student_id);
 create index if not exists topics_course_idx on public.topics (course_id, position);
 
+-- репетиторы: доступ к кабинету репетитора есть только у явно назначенных аккаунтов.
+-- Первый пользователь в пустой системе становится репетитором автоматически (см. my_role).
+-- Добавить ещё одного репетитора:
+--   insert into public.tutors (user_id) select id from auth.users where email = 'tutor2@example.com';
+create table if not exists public.tutors (
+  user_id uuid primary key references auth.users on delete cascade,
+  created_at timestamptz not null default now()
+);
+
 -- ---------------------------------------------------------------- функции доступа
 
 -- id учеников, к которым у текущего пользователя есть доступ как у ученика/родителя
@@ -211,14 +220,28 @@ language sql stable security definer set search_path = public as $$
   select distinct s.tutor_id from public.students s where s.id in (select public.my_student_ids())
 $$;
 
--- роль: репетитор — у кого есть свои ученики; иначе, если e-mail указан в карточке ученика, — ученик/родитель.
--- Так ученик, зарегистрировавшийся раньше, чем репетитор вписал его e-mail, не застревает в роли репетитора.
-create or replace function public.my_role() returns text
+-- текущий пользователь — репетитор?
+create or replace function public.is_tutor() returns boolean
 language sql stable security definer set search_path = public as $$
-  select case
-    when exists (select 1 from public.students where tutor_id = auth.uid()) then 'tutor'
-    when exists (select 1 from public.my_student_ids()) then 'student'
-    else 'tutor' end
+  select exists (select 1 from public.tutors where user_id = auth.uid())
+$$;
+
+-- роль: tutor — назначенный репетитор; student — e-mail указан в карточке ученика; none — доступа нет
+-- (например, ученика удалили из базы, а его аккаунт и сессия остались).
+create or replace function public.my_role() returns text
+language plpgsql volatile security definer set search_path = public as $$
+begin
+  if auth.uid() is null then return 'none'; end if;
+  if exists (select 1 from public.tutors where user_id = auth.uid()) then return 'tutor'; end if;
+  if exists (select 1 from public.my_student_ids()) then return 'student'; end if;
+  -- самый первый пользователь в пустой системе — владелец кабинета
+  perform pg_advisory_xact_lock(hashtext('tutor-cabinet:first-tutor'));
+  if not exists (select 1 from public.tutors) then
+    insert into public.tutors (user_id) values (auth.uid());
+    return 'tutor';
+  end if;
+  return 'none';
+end
 $$;
 
 -- карточки учеников для личного кабинета — без личных заметок репетитора
@@ -228,7 +251,8 @@ language sql stable security definer set search_path = public as $$
   from public.students s where s.id in (select public.my_student_ids())
 $$;
 
-grant execute on function public.my_student_ids(), public.my_tutor_ids(), public.my_role(), public.portal_students() to authenticated;
+revoke execute on function public.my_role() from public, anon;
+grant execute on function public.my_student_ids(), public.my_tutor_ids(), public.my_role(), public.portal_students(), public.is_tutor() to authenticated;
 
 -- ---------------------------------------------------------------- RLS
 
@@ -240,7 +264,7 @@ begin
                            'lessons','subscriptions','payments','quizzes','assessments','homework','materials','notes'] loop
     execute format('alter table public.%I enable row level security', t);
     execute format('drop policy if exists tutor_all on public.%I', t);
-    execute format('create policy tutor_all on public.%I for all to authenticated using (tutor_id = auth.uid()) with check (tutor_id = auth.uid())', t);
+    execute format('create policy tutor_all on public.%I for all to authenticated using (tutor_id = auth.uid() and public.is_tutor()) with check (tutor_id = auth.uid() and public.is_tutor())', t);
   end loop;
 
   -- ученик/родитель: только чтение своих данных (заметки, тесты и материалы репетитора скрыты)
@@ -255,9 +279,13 @@ begin
   end loop;
 end $$;
 
+alter table public.tutors enable row level security;
+drop policy if exists tutors_self on public.tutors;
+create policy tutors_self on public.tutors for select to authenticated using (user_id = auth.uid());
+
 alter table public.settings enable row level security;
 drop policy if exists tutor_all on public.settings;
-create policy tutor_all on public.settings for all to authenticated using (id = auth.uid()) with check (id = auth.uid());
+create policy tutor_all on public.settings for all to authenticated using (id = auth.uid() and public.is_tutor()) with check (id = auth.uid() and public.is_tutor());
 drop policy if exists student_read on public.settings;
 create policy student_read on public.settings for select to authenticated using (id in (select public.my_tutor_ids()));
 
@@ -267,8 +295,8 @@ insert into storage.buckets (id, name, public) values ('files', 'files', false) 
 
 drop policy if exists "files tutor all" on storage.objects;
 create policy "files tutor all" on storage.objects for all to authenticated
-  using (bucket_id = 'files' and (storage.foldername(name))[1] = auth.uid()::text)
-  with check (bucket_id = 'files' and (storage.foldername(name))[1] = auth.uid()::text);
+  using (bucket_id = 'files' and (storage.foldername(name))[1] = auth.uid()::text and public.is_tutor())
+  with check (bucket_id = 'files' and (storage.foldername(name))[1] = auth.uid()::text and public.is_tutor());
 
 drop policy if exists "files student read" on storage.objects;
 create policy "files student read" on storage.objects for select to authenticated

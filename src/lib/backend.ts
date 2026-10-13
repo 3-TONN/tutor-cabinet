@@ -6,7 +6,8 @@ import { createClient, type SupabaseClient, type User } from "@supabase/supabase
 import { Attachment, DB, TABLES, TableName, emptyDB } from "./types";
 import { uid } from "./utils";
 
-export type Role = "tutor" | "student";
+/** none — аккаунт ни к чему не привязан (например, ученика удалили): доступа нет */
+export type Role = "tutor" | "student" | "none";
 
 export interface Backend {
   mode: "local" | "supabase";
@@ -129,7 +130,8 @@ export class SupabaseBackend implements Backend {
   async role(): Promise<Role> {
     const { data, error } = await supabase().rpc("my_role");
     if (error) throw new Error(error.message);
-    this.currentRole = data === "student" ? "student" : "tutor";
+    // неизвестный ответ трактуется как «нет доступа», а не как репетитор
+    this.currentRole = data === "tutor" ? "tutor" : data === "student" ? "student" : "none";
     return this.currentRole;
   }
 }

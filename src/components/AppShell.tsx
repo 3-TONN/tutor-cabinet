@@ -79,6 +79,20 @@ export function AppShell({ children }: { children: ReactNode }) {
   );
 
   // Личный кабинет ученика / родителя
+  if (role === "none")
+    return (
+      <div className="flex min-h-screen items-center justify-center p-6">
+        <div className="max-w-md text-center">
+          <span className="num mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-ink text-sm font-semibold text-paper">{"{}"}</span>
+          <h1 className="text-2xl font-bold tracking-tight">Нет доступа к кабинету</h1>
+          <p className="mt-3 text-graphite">
+            Аккаунт {session?.user.email} не привязан ни к одному ученику. Если вы ученик или родитель, попросите репетитора указать
+            этот e-mail в карточке ученика и войдите снова.
+          </p>
+          <Button className="mt-6" icon="logout" onClick={signOut}>Выйти</Button>
+        </div>
+      </div>
+    );
   if (role === "student")
     return (<><PortalView studentIds={db.students.map((s) => s.id)} onExit={signOut} exitLabel="Выйти" />{toastsEl}</>);
   if (path.startsWith("/portal") && portalStudentId && db.students.some((s) => s.id === portalStudentId))

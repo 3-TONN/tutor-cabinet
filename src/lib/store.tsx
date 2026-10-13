@@ -145,6 +145,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       try {
         const r = await withRetry(() => b.role());
         if (!alive()) return;
+        if (r === "none") {
+          // Нет доступа: никаких данных не загружаем и кабинет репетитора не создаём
+          setDb(emptyDB());
+          setBackend(b);
+          setRole("none");
+          setStatus("ready");
+          return;
+        }
         await init(b, r, alive);
       } catch (e) {
         if (!alive()) return;

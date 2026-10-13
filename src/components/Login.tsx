@@ -19,7 +19,8 @@ export function Login() {
     setBusy(true);
     setMsg(null);
     const sb = supabase().auth;
-    const redirect = typeof window !== "undefined" ? window.location.origin : undefined;
+    // Ссылка из письма должна вести на сайт с учётом префикса (GitHub Pages: /tutor-cabinet/)
+    const redirect = typeof window !== "undefined" ? `${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/` : undefined;
     try {
       if (mode === "signin") {
         const { error } = await sb.signInWithPassword({ email, password });

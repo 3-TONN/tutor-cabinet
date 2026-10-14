@@ -139,7 +139,7 @@ export class SupabaseBackend implements Backend {
 // ---------------------------------------------------------------- Local (демо)
 
 // v2 — демо-данные под ЕГЭ по информатике (старые данные v1 остаются в браузере нетронутыми)
-const LS_KEY = "tutor-cabinet-db-v2";
+const LS_KEY = "tutor-cabinet-db-v3"; // v3 — демо с материалами занятий
 
 export class LocalBackend implements Backend {
   mode = "local" as const;

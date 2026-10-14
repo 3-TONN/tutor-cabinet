@@ -8,7 +8,8 @@ import {
   HW_STATUS, LESSON_STATUS, earnedByMonth, expectedForMonth, hwEffective, lessonsInRange, paidByMonth, paymentAlerts, staleStudents, topicNames,
 } from "@/lib/logic";
 import { addDays, addMonths, cls, fmtDate, fmtTime, monthKey, plural, rub, startOfDay, startOfWeek, ymd, WEEKDAYS_SHORT, MONTHS_GEN } from "@/lib/utils";
-import { Badge, Button, Card, Empty, PageHeader, Stat, StatRow } from "@/components/ui";
+import { Badge, Button, Card, Empty, PageHeader, Select, Stat, StatRow } from "@/components/ui";
+import { CourseChart } from "@/components/CourseChart";
 import { LessonItem, chipClass } from "@/components/LessonItem";
 import { HomeworkModal, LessonModal, PaymentModal } from "@/components/forms";
 import { Icon } from "@/components/Icon";
@@ -18,6 +19,9 @@ export default function Dashboard() {
   const [lessonModal, setLessonModal] = useState<{ lesson?: Lesson; report?: boolean } | null>(null);
   const [payFor, setPayFor] = useState<string | null>(null);
   const [hwId, setHwId] = useState<string | null>(null);
+  const active = db.students.filter((x) => x.status === "active" && db.student_courses.some((c) => c.student_id === x.id));
+  const [mapStudentId, setMapStudentId] = useState<string>("");
+  const mapStudent = active.find((x) => x.id === mapStudentId) ?? active[0];
 
   const now = new Date();
   const today = startOfDay(now);
@@ -44,6 +48,10 @@ export default function Dashboard() {
   const paidPrevSamePeriod = db.payments.filter((p) => monthKey(p.date) === prevKey && Number(p.date.slice(8)) <= day).reduce((s, p) => s + p.amount, 0);
   const diff = paidPrevSamePeriod ? Math.round(((paidNow - paidPrevSamePeriod) / paidPrevSamePeriod) * 100) : null;
   const expected = expectedForMonth(db, thisKey);
+  const debtTotal = -alerts.filter((a) => a.kind === "debt").reduce((sum, a) => sum + a.balance, 0);
+  const debtors = alerts.filter((a) => a.kind === "debt").length;
+  const hwToCheck = hwOpen.filter((x) => x.eff === "submitted").length;
+  const hwOverdue = hwOpen.filter((x) => x.eff === "overdue").length;
   const studentName = (id: string) => db.students.find((s) => s.id === id)?.full_name ?? "—";
 
   // группировка недели по дням
@@ -60,57 +68,87 @@ export default function Dashboard() {
         </>}
       />
 
-      {/* Главный блок экрана — занятия на сегодня */}
-      <section aria-labelledby="today" className="mb-8 rounded-3xl bg-ink p-5 text-paper sm:p-8">
-        <div className="flex items-baseline justify-between gap-3">
-          <h2 id="today" className="text-lg font-semibold">Сегодня</h2>
-          <span className="text-sm text-paper/60">{todayLessons.length ? `${todayLessons.length} ${plural(todayLessons.length, "занятие", "занятия", "занятий")}` : "Свободный день"}</span>
+      {/* Главный блок экрана — занятия на сегодня: ячейки с крупным временем, текущее занятие инверсное */}
+      <div className="mb-10 grid gap-x-6 gap-y-8 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1.15fr)]">
+      <section aria-labelledby="today">
+        <div className="mb-3 flex items-baseline justify-between gap-3">
+          <h2 id="today" className="font-semibold">Сегодня</h2>
+          <span className="num text-sm text-graphite">{todayLessons.length ? `${todayLessons.length} ${plural(todayLessons.length, "занятие", "занятия", "занятий")}` : "свободный день"}</span>
         </div>
         {todayLessons.length ? (
-          <ul className="mt-4 divide-y divide-paper/15">
+          <div className="flex flex-wrap gap-px overflow-hidden rounded-2xl border border-ink bg-ink">
             {todayLessons.map((l) => {
               const st = db.students.find((x) => x.id === l.student_id);
-              const end = new Date(new Date(l.starts_at).getTime() + l.duration * 60000);
+              const start = new Date(l.starts_at);
+              const end = new Date(start.getTime() + l.duration * 60000);
+              const live = l.status === "planned" && start <= now && now < end;
               const needs = l.status === "planned" && end < now;
+              const nextUp = l.status === "planned" && !live && start > now && todayLessons.filter((x) => x.status === "planned" && new Date(x.starts_at) > now)[0]?.id === l.id;
+              const inverse = live || (nextUp && !todayLessons.some((x) => x.status === "planned" && new Date(x.starts_at) <= now && now < new Date(new Date(x.starts_at).getTime() + x.duration * 60000)));
+              const cancelled = l.status.startsWith("cancelled");
               return (
-                <li key={l.id} className="flex flex-wrap items-center gap-x-6 gap-y-3 py-4 sm:flex-nowrap">
-                  <button type="button" onClick={() => setLessonModal({ lesson: l })} className="flex min-w-0 basis-full items-center gap-5 text-left sm:flex-1 sm:basis-auto sm:gap-8">
-                    <span className={`num text-[2.75rem] font-medium leading-none sm:text-6xl ${l.status.startsWith("cancelled") ? "text-paper/40 line-through" : ""}`}>{fmtTime(l.starts_at)}</span>
-                    <span className="min-w-0">
-                      <span className="block truncate text-lg font-semibold">{st?.full_name ?? "—"}</span>
-                      <span className="block truncate text-sm text-paper/60">
-                        {l.status === "done" ? "Проведено" : l.status !== "planned" ? LESSON_STATUS[l.status].label : needs ? "Закончилось, ждёт отметки" : `до ${fmtTime(end)}`}
-                        {l.topic_ids.length ? `, ${topicNames(db, l.topic_ids).join(", ")}` : st?.goal ? `, ${st.goal}` : ""}
-                      </span>
-                    </span>
+                <div key={l.id} className={cls("flex min-h-[10rem] min-w-[16rem] flex-1 basis-[18rem] flex-col justify-between gap-4 p-5", inverse ? "bg-ink text-paper" : "bg-paper")}>
+                  <button type="button" onClick={() => setLessonModal({ lesson: l })} className="text-left">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className={cls("num text-[2.75rem] font-medium leading-none tracking-tight sm:text-[3.25rem]", cancelled && "line-through opacity-50")}>{fmtTime(start)}</span>
+                      <span className={cls("num text-xs", inverse ? "text-paper/70" : "text-graphite")}>до {fmtTime(end)}</span>
+                    </div>
+                    <div className="mt-3 truncate font-semibold">{st?.full_name ?? "—"}</div>
+                    <div className={cls("truncate text-sm", inverse ? "text-paper/70" : "text-graphite")}>
+                      {live ? "Идёт сейчас" : needs ? "Закончилось, ждёт отметки" : nextUp ? "Следующее" : l.status !== "planned" ? LESSON_STATUS[l.status].label : "Запланировано"}
+                      {l.topic_ids.length ? ` · ${topicNames(db, l.topic_ids).join(", ")}` : ""}
+                    </div>
                   </button>
-                  {l.status === "planned" && (
+                  {l.status === "planned" ? (
                     <button type="button" onClick={() => setLessonModal({ lesson: l, report: true })}
-                      className="inline-flex h-11 items-center gap-2 rounded-full bg-paper px-5 text-sm font-medium text-ink transition-opacity hover:opacity-85">
+                      className={cls("inline-flex h-10 items-center gap-2 self-start rounded-full px-4 text-sm font-medium transition-colors",
+                        inverse ? "bg-paper text-ink hover:bg-paper/85" : needs ? "bg-accent text-on-accent hover:bg-accent/90" : "ring-1 ring-inset ring-ink/25 hover:ring-ink")}>
                       <Icon name="check" className="w-[18px] h-[18px]" />Провести
                     </button>
-                  )}
-                </li>
+                  ) : l.status === "done" ? (
+                    <button type="button" onClick={() => setLessonModal({ lesson: l, report: true })}
+                      className={cls("self-start text-sm font-medium hover:underline", inverse ? "text-paper" : "text-accent")}>
+                      {(l.attachments ?? []).length ? `Материалы · ${l.attachments!.length}` : "Добавить материалы"}
+                    </button>
+                  ) : null}
+                </div>
               );
             })}
-          </ul>
+          </div>
         ) : (
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-            <p className="max-w-md text-paper/70">Занятий нет. Можно подготовить материалы или поставить занятие.</p>
-            <button type="button" onClick={() => setLessonModal({})} className="inline-flex h-11 items-center gap-2 rounded-full bg-paper px-5 text-sm font-medium text-ink">
-              <Icon name="plus" className="w-[18px] h-[18px]" />Поставить занятие
-            </button>
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-paper p-5">
+            <p className="text-graphite">Занятий сегодня нет. Можно подготовить материалы или поставить занятие.</p>
+            <Button icon="plus" onClick={() => setLessonModal({})}>Поставить занятие</Button>
           </div>
         )}
       </section>
 
-      <StatRow className="mb-10">
-        <Stat label="Получено в этом месяце" value={rub(paidNow)}
-          sub={diff == null ? `В прошлом месяце ${rub(paidPrev)}` : <span className={diff >= 0 ? "text-ink" : "text-signal"}>{diff >= 0 ? "+" : "−"}{Math.abs(diff)}% к тому же периоду прошлого месяца</span>} />
-        <Stat label="Заработано за проведённые" value={rub(earned.get(thisKey) ?? 0)} sub={`Прошлый месяц ${rub(earned.get(prevKey) ?? 0)}`} />
-        <Stat label="Ожидается до конца месяца" value={rub(expected)} sub="По запланированным занятиям" />
-        <Stat label="Занятий на неделе" value={weekLessons.length} sub={`Проведено ${weekLessons.filter((l) => l.status === "done").length}`} />
-      </StatRow>
+      <section aria-labelledby="summary">
+        <div className="mb-3 flex items-baseline justify-between gap-3">
+          <h2 id="summary" className="font-semibold">Сводка</h2>
+          <span className="num text-sm text-graphite">{MONTHS_GEN[now.getMonth()]}</span>
+        </div>
+        <StatRow wide={false}>
+          <Stat label="Получено" value={rub(paidNow)}
+            sub={diff == null ? `Прошлый месяц ${rub(paidPrev)}` : <span className={diff >= 0 ? "text-ink" : "text-signal"}>{diff >= 0 ? "+" : "−"}{Math.abs(diff)}% к прошлому месяцу</span>} />
+          <Stat label="Ожидается" value={rub(expected)} sub="По расписанию" />
+          <Stat label="Долги" value={rub(debtTotal)} tone={debtTotal > 0 ? "bad" : undefined} sub={debtors ? `${debtors} ${plural(debtors, "ученик", "ученика", "учеников")}` : "Все оплатили"} />
+          <Stat label="ДЗ на проверку" value={hwToCheck} tone={hwOverdue > 0 ? "bad" : undefined} sub={hwOverdue ? `Просрочено ${hwOverdue}` : "Просрочек нет"} />
+          <Stat label="Заработано" value={rub(earned.get(thisKey) ?? 0)} sub={`Прошлый месяц ${rub(earned.get(prevKey) ?? 0)}`} />
+          <Stat label="За неделю" value={weekLessons.length} sub={`${plural(weekLessons.length, "занятие", "занятия", "занятий")}, проведено ${weekLessons.filter((l) => l.status === "done").length}`} />
+        </StatRow>
+      </section>
+      </div>
+
+      {mapStudent && (
+        <Card className="mb-10" title="Карта курса" actions={
+          <Select aria-label="Ученик для карты курса" className="h-9 w-auto py-1 text-sm" value={mapStudent.id} onChange={(e) => setMapStudentId(e.target.value)}>
+            {active.map((x) => <option key={x.id} value={x.id}>{x.full_name}</option>)}
+          </Select>
+        }>
+          <CourseChart key={mapStudent.id} studentId={mapStudent.id} />
+        </Card>
+      )}
 
       <div className="grid gap-x-10 gap-y-8 lg:grid-cols-3">
         <div className="space-y-8 lg:col-span-2">
@@ -175,7 +213,7 @@ export default function Dashboard() {
                   <li key={a.student.id} className="flex items-center gap-2">
                     <Link href={`/students/view?id=${a.student.id}`} className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium">{a.student.full_name}</div>
-                      <div className={`text-xs ${a.kind === "debt" ? "text-signal" : "text-amber-600"}`}>
+                      <div className={`text-xs ${a.kind === "debt" ? "text-signal" : "text-ink"}`}>
                         {a.kind === "debt" ? `Долг ${rub(-a.balance)}` : a.text}
                       </div>
                     </Link>

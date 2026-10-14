@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:#fff;color:#000;font:15px/1.4 Onest,sans-serif;display:grid;grid-template-columns:248px 1fr}
+.m{font-family:'JetBrains Mono',monospace}
+aside{border-right:1px solid #000;padding:24px 16px;display:flex;flex-direction:column;gap:2px}
+.logo{display:flex;gap:10px;align-items:center;margin-bottom:28px}
+.logo b{width:40px;height:40px;background:#000;color:#fff;display:grid;place-items:center;font:500 13px 'JetBrains Mono'}
+.logo span{font-weight:700;line-height:1.15}.logo small{display:block;font-weight:400;color:#6b6b6b;font-size:13px}
+nav a{display:flex;justify-content:space-between;padding:9px 12px;color:#000;text-decoration:none;font-weight:500}
+nav a i{font:400 12px 'JetBrains Mono';color:#9a9a9a;font-style:normal}
+nav a.on{background:#2340FF;color:#fff}nav a.on i{color:#c9d0ff}
+main{padding:28px 36px;display:grid;grid-template-columns:1fr 340px;grid-template-rows:auto auto 1fr;gap:20px 28px}
+h1{grid-column:1/3;font:700 40px/1 Onest;letter-spacing:-.03em}
+h1 small{font:400 15px Onest;color:#6b6b6b;letter-spacing:0;margin-left:14px}
+.today{border:1px solid #000;display:grid;grid-template-columns:repeat(3,1fr)}
+.today div{padding:16px 18px;border-right:1px solid #000}.today div:last-child{border:0}
+.today .t{font:500 44px/1 'JetBrains Mono';letter-spacing:-.03em}
+.today .n{font-weight:700;margin-top:10px}.today .s{color:#6b6b6b;font-size:13px}
+.today .now{background:#000;color:#fff}.today .now .s{color:#bdbdbd}
+.side{grid-row:2/4;grid-column:2;display:grid;gap:0;border:1px solid #000;align-content:start}
+.side div{padding:14px 16px;border-bottom:1px solid #e3e3e3}
+.side .l{font-size:13px;color:#6b6b6b}.side .v{font:500 26px 'JetBrains Mono';margin-top:4px}
+.side .debt .v{color:#E5484D}
+.chart h2{font:700 15px Onest;margin-bottom:10px;display:flex;justify-content:space-between}
+.chart h2 span{font:400 13px 'JetBrains Mono';color:#6b6b6b}
+table{border-collapse:collapse;width:100%;table-layout:fixed}
+th{background:#000;color:#fff;font:500 12px 'JetBrains Mono';height:24px}
+td{border:1px solid #d6d6d6;height:52px;font-size:11px;line-height:1.15;padding:4px;vertical-align:top;overflow:hidden}
+td .c{display:block;font:400 10px 'JetBrains Mono';color:#8a8a8a;margin-bottom:2px}
+.ms{background:#000;color:#fff}.ms .c{color:#9a9a9a}
+.ps{background:#c7c7c7}
+.ip{background:repeating-linear-gradient(135deg,#00000055 0 1.5px,transparent 1.5px 6px)}
+.rv{outline:1.5px solid #E5484D;outline-offset:-2px;color:#E5484D}
+.sel{outline:3px solid #2340FF;outline-offset:-3px}
+.readout{margin-top:10px;display:flex;gap:18px;font:400 13px 'JetBrains Mono';border-top:1px solid #000;padding-top:8px}
+.readout b{color:#2340FF;font-weight:500}
+</style></head><body>
+<aside>
+<div class="logo"><b>{}</b><span>Кабинет репетитора<small>ЕГЭ по информатике</small></span></div>
+<nav>
+<a class="on">Главная<i>00</i></a><a>Расписание<i>01</i></a><a>Ученики<i>02</i></a><a>Программа<i>03</i></a><a>Контроль знаний<i>04</i></a><a>Домашние задания<i>05</i></a><a>Оплаты<i>06</i></a><a>Отчёты родителям<i>07</i></a><a>Материалы<i>08</i></a>
+</nav></aside>
+<main>
+<h1>Вторник, 14 октября<small>4 занятия сегодня · 11 на неделе</small></h1>
+<div class="today">
+<div><div class="t">15:00</div><div class="n">Козлов Максим</div><div class="s">Проведено · Рекурсия</div></div>
+<div class="now"><div class="t">17:00</div><div class="n">Петров Иван</div><div class="s">Сейчас · Адресация в сети 2</div></div>
+<div><div class="t">19:30</div><div class="n">Смирнова Анна</div><div class="s">Через 2 ч · Python. Списки 1</div></div>
+</div>
+<div class="side">
+<div><div class="l">Получено в октябре</div><div class="v">23 700 ₽</div></div>
+<div><div class="l">Ожидается до конца месяца</div><div class="v">28 200 ₽</div></div>
+<div class="debt"><div class="l">Долг · Смирнова Анна</div><div class="v">−3 000 ₽</div></div>
+<div><div class="l">Абонемент · Козлов Максим</div><div class="v">1 / 4</div></div>
+<div><div class="l">ДЗ ждут проверки</div><div class="v">3</div></div>
+<div><div class="l">Без проверки &gt;14 дн.</div><div class="v">Волкова М.</div></div>
+</div>
+<div class="chart">
+<h2>Карта курса · Петров Иван <span>37 / 82 тем · 0x00–0x51</span></h2>
+<table>
+<tr><th style="width:34px"></th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+<tr><th>00</th><td class="ms"><span class="c">00</span>Основы логики 1</td><td class="ms"><span class="c">01</span>Python. Основы</td><td class="ps"><span class="c">02</span>Инф. модели</td><td class="ms"><span class="c">03</span>Ветвление</td><td class="ps"><span class="c">04</span>Кратчайший путь</td><td class="ms"><span class="c">05</span>Цикл while</td><td class="ms"><span class="c">06</span>Цикл for</td><td class="ps"><span class="c">07</span>Основы логики 2</td><td class="ps"><span class="c">08</span>Макс и мин</td><td class="ms"><span class="c">09</span>Вложенные циклы</td><td class="rv"><span class="c">0A</span>Логич. функции</td><td class="ps"><span class="c">0B</span>Кодирование</td><td class="ps"><span class="c">0C</span>Эл. таблицы</td><td class="ms"><span class="c">0D</span>Списки 1</td><td class="ps"><span class="c">0E</span>Строки 1</td><td class="ps"><span class="c">0F</span>Объём памяти</td></tr>
+<tr><th>10</th><td class="ms"><span class="c">10</span>Функции</td><td class="ps"><span class="c">11</span>Библиотеки</td><td class="ps"><span class="c">12</span>Рекурсия</td><td class="ps"><span class="c">13</span>Списки 2</td><td class="ps"><span class="c">14</span>Пути в алгоритме</td><td class="ms"><span class="c">15</span>Системы счисл.</td><td class="ps"><span class="c">16</span>Объём сообщ.</td><td class="rv"><span class="c">17</span>Комбинат. 1</td><td class="ps"><span class="c">18</span>Базы данных</td><td class="ps sel"><span class="c">19</span>Строки 2</td><td class="ps"><span class="c">1A</span>Комбинат. 2</td><td class="ps"><span class="c">1B</span>Двоичные преобр.</td><td class="ps"><span class="c">1C</span>Редактор 1</td><td class="ps"><span class="c">1D</span>Поиск в файлах</td><td class="ps"><span class="c">1E</span>Адресация 1</td><td class="ps"><span class="c">1F</span>Робот в ЭТ 1</td></tr>
+<tr><th>20</th><td class="ip"><span class="c">20</span>Адресация 2</td><td><span class="c">21</span>Редактор 2</td><td><span class="c">22</span>Python. Комбинат.</td><td><span class="c">23</span>Робот и Чертёжник</td><td><span class="c">24</span>Робот в ЭТ 2</td><td><span class="c">25</span>ПОУ. Кодир. 1</td><td><span class="c">26</span>Паралл. проц. 1</td><td><span class="c">27</span>ПОУ. Алгоритм. 1</td><td><span class="c">28</span>Неравенства</td><td><span class="c">29</span>Списки 3</td><td><span class="c">2A</span>ПОУ. Прогр. 1</td><td><span class="c">2B</span>Исп. Программы</td><td><span class="c">2C</span>Паралл. проц. 2</td><td><span class="c">2D</span>Теория игр</td><td><span class="c">2E</span>Разлож. на цифры</td><td><span class="c">2F</span>Одна куча</td></tr>
+<tr><th>30</th><td><span class="c">30</span>Чтение файлов</td><td><span class="c">31</span>Python. Одна куча</td><td><span class="c">32</span>Разлож. 2</td><td><span class="c">33</span>Две кучи</td><td><span class="c">34</span>Отрезки</td><td><span class="c">35</span>Черепаха</td><td><span class="c">36</span>Множества</td><td><span class="c">37</span>Python. Две кучи</td><td><span class="c">38</span>Целочисл. 1</td><td><span class="c">39</span>Лин. функции</td><td><span class="c">3A</span>ПОУ. Логика 1</td><td><span class="c">3B</span>Целочисл. 2</td><td><span class="c">3C</span>Целочисл. 3</td><td><span class="c">3D</span>Обработка ЭТ</td><td><span class="c">3E</span>Python. Логика</td><td><span class="c">3F</span>Сортировка</td></tr>
+</table>
+<div class="readout"><b>0x19</b><span>Python. Строки 2</span><span>Блок 5 → Контрольная работа 2</span><span>пройдена · 84% по проверкам</span></div>
+</div>
+</main>
+</body></html>

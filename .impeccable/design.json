@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-14T00:00:00Z",
+  "title": "Design System: Кабинет репетитора",
+  "extensions": {
+    "colorMeta": {
+      "ink": { "role": "neutral", "displayName": "Pure Ink", "canonical": "rgb(0 0 0)", "cssVar": "--ink", "tonalRamp": ["#000000", "#1a1a1d", "#333338", "#4d4d54", "#66666e", "#9a9aa2", "#cdcdd2", "#f3f3f5"] },
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "rgb(255 255 255)", "cssVar": "--paper", "tonalRamp": ["#262628", "#4a4a4e", "#6e6e74", "#939399", "#b8b8bd", "#dcdcdf", "#f3f3f5", "#ffffff"] },
+      "surface": { "role": "neutral", "displayName": "Surface", "canonical": "rgb(255 255 255)", "cssVar": "--surface", "tonalRamp": ["#262628", "#4a4a4e", "#6e6e74", "#939399", "#b8b8bd", "#dcdcdf", "#f3f3f5", "#ffffff"] },
+      "mist": { "role": "neutral", "displayName": "Mist", "canonical": "rgb(243 243 245)", "cssVar": "--mist", "tonalRamp": ["#1e1e24", "#3a3a42", "#575760", "#75757e", "#94949c", "#b4b4ba", "#d4d4d8", "#f3f3f5"] },
+      "line": { "role": "neutral", "displayName": "Hairline", "canonical": "rgb(222 222 226)", "cssVar": "--line", "tonalRamp": ["#26262b", "#3d3d44", "#55555d", "#6f6f78", "#8b8b93", "#a8a8af", "#c4c4ca", "#dedee2"] },
+      "graphite": { "role": "neutral", "displayName": "Graphite", "canonical": "rgb(102 102 110)", "cssVar": "--graphite", "tonalRamp": ["#1d1d20", "#2f2f34", "#424248", "#55555c", "#66666e", "#8a8a92", "#b5b5bb", "#e2e2e6"] },
+      "signal": { "role": "secondary", "displayName": "Signal Red", "canonical": "rgb(217 45 32)", "cssVar": "--signal", "tonalRamp": ["#55160c", "#7a271a", "#912018", "#b42318", "#d92d20", "#f97066", "#fecdca", "#fef3f2"] },
+      "accent": { "role": "primary", "displayName": "Code-Point Ultramarine", "canonical": "rgb(35 64 255)", "cssVar": "--accent", "tonalRamp": ["oklch(22% 0.12 266)", "oklch(32% 0.18 266)", "oklch(42% 0.24 266)", "oklch(50% 0.28 266)", "oklch(62% 0.2 268)", "oklch(72% 0.14 270)", "oklch(84% 0.07 272)", "oklch(95% 0.02 272)"] },
+      "on-accent": { "role": "primary", "displayName": "On-Ultramarine", "canonical": "rgb(255 255 255)", "cssVar": "--on-accent", "tonalRamp": ["#262628", "#4a4a4e", "#6e6e74", "#939399", "#b8b8bd", "#dcdcdf", "#f3f3f5", "#ffffff"] },
+      "ink-dark": { "role": "neutral", "displayName": "Soft Ink (dark)", "canonical": "rgb(237 237 240)", "cssVar": "--ink (.dark)", "tonalRamp": ["#1e1e22", "#3a3a40", "#57575f", "#76767e", "#95959d", "#b4b4bb", "#d2d2d7", "#ededf0"] },
+      "paper-dark": { "role": "neutral", "displayName": "Night Paper (dark)", "canonical": "rgb(6 6 8)", "cssVar": "--paper (.dark)", "tonalRamp": ["#060608", "#121216", "#1e1e24", "#303038", "#4a4a54", "#6a6a74", "#a0a0aa", "#ededf0"] },
+      "surface-dark": { "role": "neutral", "displayName": "Night Surface (dark)", "canonical": "rgb(18 18 22)", "cssVar": "--surface (.dark)", "tonalRamp": ["#060608", "#121216", "#1e1e24", "#303038", "#4a4a54", "#6a6a74", "#a0a0aa", "#ededf0"] },
+      "mist-dark": { "role": "neutral", "displayName": "Night Mist (dark)", "canonical": "rgb(30 30 36)", "cssVar": "--mist (.dark)", "tonalRamp": ["#060608", "#121216", "#1e1e24", "#303038", "#4a4a54", "#6a6a74", "#a0a0aa", "#ededf0"] },
+      "line-dark": { "role": "neutral", "displayName": "Night Hairline (dark)", "canonical": "rgb(48 48 56)", "cssVar": "--line (.dark)", "tonalRamp": ["#060608", "#121216", "#1e1e24", "#303038", "#4a4a54", "#6a6a74", "#a0a0aa", "#ededf0"] },
+      "graphite-dark": { "role": "neutral", "displayName": "Night Graphite (dark)", "canonical": "rgb(160 160 170)", "cssVar": "--graphite (.dark)", "tonalRamp": ["#060608", "#121216", "#1e1e24", "#303038", "#4a4a54", "#6a6a74", "#a0a0aa", "#ededf0"] },
+      "signal-dark": { "role": "secondary", "displayName": "Signal Red (dark)", "canonical": "rgb(255 107 94)", "cssVar": "--signal (.dark)", "tonalRamp": ["oklch(25% 0.09 28)", "oklch(35% 0.13 28)", "oklch(45% 0.17 28)", "oklch(55% 0.2 28)", "oklch(70% 0.18 28)", "oklch(78% 0.13 28)", "oklch(87% 0.07 28)", "oklch(95% 0.02 28)"] },
+      "accent-dark": { "role": "primary", "displayName": "Code-Point Ultramarine (dark)", "canonical": "rgb(120 140 255)", "cssVar": "--accent (.dark)", "tonalRamp": ["oklch(22% 0.12 266)", "oklch(32% 0.18 266)", "oklch(42% 0.22 266)", "oklch(52% 0.22 268)", "oklch(66% 0.17 270)", "oklch(74% 0.13 272)", "oklch(85% 0.07 272)", "oklch(95% 0.02 272)"] },
+      "on-accent-dark": { "role": "primary", "displayName": "On-Ultramarine (dark)", "canonical": "rgb(6 6 8)", "cssVar": "--on-accent (.dark)", "tonalRamp": ["#060608", "#121216", "#1e1e24", "#303038", "#4a4a54", "#6a6a74", "#a0a0aa", "#ededf0"] }
+    },
+    "materialTokens": [
+      { "name": "--glass-tint", "light": "255 255 255", "dark": "24 24 30", "purpose": "Base tint of liquid-glass panels." },
+      { "name": "--glass-alpha", "light": "0.58", "dark": "0.55", "purpose": "Glass opacity; .glass-strong raises it to 0.72 for modals and sheets." },
+      { "name": "--glass-rim", "light": "255 255 255", "dark": "255 255 255", "purpose": "Inner rim and highlight colour of glass." },
+      { "name": "--grid-line", "light": "0 0 0", "dark": "255 255 255", "purpose": "Code-table background grid line colour." },
+      { "name": "--grid-alpha", "light": "0.055", "dark": "0.06", "purpose": "Grid line opacity; every 160px line is drawn at 1.8x." }
+    ],
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page header only (the date on the dashboard); 2rem, 2.75rem from 640px." },
+      "display-numeral": { "displayName": "Display Numeral", "purpose": "Lesson start times in the Today strip only; 2.75rem, 3.25rem from 640px." },
+      "headline": { "displayName": "Headline Numeral", "purpose": "Stat values in the summary mosaic (28px mono)." },
+      "title": { "displayName": "Title", "purpose": "Section and card headings, button and nav labels (15px semibold / medium)." },
+      "body": { "displayName": "Body", "purpose": "Running text and field values (15px)." },
+      "label": { "displayName": "Label", "purpose": "Hints, badges, legends, table heads (13px)." },
+      "mono-label": { "displayName": "Mono Label", "purpose": "Hex addresses, chart header codes, counts, code viewer body (13px mono)." }
+    },
+    "shadows": [
+      { "name": "glass-light", "value": "inset 0 1px 0 0 rgb(255 255 255 / 0.85), inset 0 -1px 0 0 rgb(0 0 0 / 0.06), inset 0 0 0 1px rgb(255 255 255 / 0.28), 0 12px 32px -12px rgb(0 0 0 / 0.22), 0 2px 6px -2px rgb(0 0 0 / 0.08)", "purpose": "Liquid glass in the light theme: sidebar, tab bar, readout, modals, sheets." },
+      { "name": "glass-dark", "value": "inset 0 1px 0 0 rgb(255 255 255 / 0.22), inset 0 -1px 0 0 rgb(0 0 0 / 0.4), inset 0 0 0 1px rgb(255 255 255 / 0.09), 0 14px 36px -12px rgb(0 0 0 / 0.7)", "purpose": "Liquid glass in the dark theme." },
+      { "name": "glass-backdrop", "value": "backdrop-filter: blur(18px) saturate(185%) contrast(1.04)", "purpose": "Refraction of the grid and content under glass; removed under prefers-reduced-transparency." },
+      { "name": "glass-highlight", "value": "radial-gradient(120% 60% at 30% -10%, rgb(var(--glass-rim) / 0.55), transparent 55%) with mix-blend-mode: soft-light", "purpose": "Specular spot in the upper third of every glass panel (::before)." },
+      { "name": "scrim", "value": "rgb(0 0 0 / 0.35)", "purpose": "Backdrop behind modals and the mobile 'Ещё' sheet." }
+    ],
+    "motion": [
+      { "name": "cell-in", "value": "420ms cubic-bezier(0.16, 1, 0.3, 1) both; from opacity 0, translateY(4px); delay 6ms per cell, capped at 96", "purpose": "The only authored animation: course-chart cells appear by address." },
+      { "name": "color-transition", "value": "150ms", "purpose": "Button, nav and tab colour changes." },
+      { "name": "focus-dim", "value": "opacity 200ms; non-focused cells to 0.35", "purpose": "Course chart focus dims all other cells." },
+      { "name": "progress-width", "value": "width 300ms", "purpose": "Progress bar fill." },
+      { "name": "reduced-motion", "value": "all animation and transition durations 0.01ms", "purpose": "prefers-reduced-motion: reduce." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px", "purpose": "Sidebar replaces the mobile tab bar; content offset 19rem." },
+      { "name": "chart-16", "value": "760px container width", "purpose": "Course chart switches from 8 to 16 columns (ResizeObserver on the chart container)." }
+    ],
+    "acceptedAdaptations": [
+      "Course chart uses 8 columns under 760px container width; row addresses step by 8.",
+      "Code viewer body is an opaque paper panel inside the glass modal for legibility.",
+      "The code-table grid background is part of the world, not decoration to remove."
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ultramarine pill for the single main action on a screen.",
+      "html": "<button class=\"ds-btn ds-btn-primary\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 5v14M5 12h14\"/></svg>Занятие</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; font-family: var(--font-sans, Onest, system-ui, sans-serif); font-size: 15px; line-height: 22px; font-weight: 500; white-space: nowrap; cursor: pointer; transition: background-color 150ms, box-shadow 150ms; } .ds-btn-primary { background: rgb(var(--accent, 35 64 255)); color: rgb(var(--on-accent, 255 255 255)); } .ds-btn-primary:hover { background: rgb(var(--accent, 35 64 255) / 0.9); } .ds-btn-primary:active { background: rgb(var(--accent, 35 64 255) / 0.8); } .ds-btn:focus-visible { outline: 2px solid rgb(var(--accent, 35 64 255)); outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Paper pill with an ink hairline ring; secondary actions.",
+      "html": "<button class=\"ds-btn-secondary\">Внести оплату</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgb(var(--paper, 255 255 255)); color: rgb(var(--ink, 0 0 0)); box-shadow: inset 0 0 0 1px rgb(var(--ink, 0 0 0) / 0.25); font-family: var(--font-sans, Onest, system-ui, sans-serif); font-size: 15px; font-weight: 500; cursor: pointer; transition: box-shadow 150ms; } .ds-btn-secondary:hover { box-shadow: inset 0 0 0 1px rgb(var(--ink, 0 0 0)); } .ds-btn-secondary:focus-visible { outline: 2px solid rgb(var(--accent, 35 64 255)); outline-offset: 2px; }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Signal-red pill, only for destructive confirmation.",
+      "html": "<button class=\"ds-btn-danger\">Удалить</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; height: 44px; padding: 0 20px; border: 0; border-radius: 9999px; background: rgb(var(--signal, 217 45 32)); color: #fff; font-family: var(--font-sans, Onest, system-ui, sans-serif); font-size: 15px; font-weight: 500; cursor: pointer; transition: background-color 150ms; } .ds-btn-danger:hover { background: rgb(var(--signal, 217 45 32) / 0.9); } .ds-btn-danger:focus-visible { outline: 2px solid rgb(var(--accent, 35 64 255)); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Paper field with a hairline stroke; ultramarine border and soft ring on focus.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Сумма, ₽</span><input class=\"ds-input\" placeholder=\"0\"><span class=\"ds-field-hint\">Спишется с баланса ученика</span></label>",
+      "css": ".ds-field { display: block; font-family: var(--font-sans, Onest, system-ui, sans-serif); } .ds-field-label { display: block; margin-bottom: 6px; font-size: 15px; font-weight: 500; color: rgb(var(--ink, 0 0 0)); } .ds-field-hint { display: block; margin-top: 6px; font-size: 13px; line-height: 18px; color: rgb(var(--graphite, 102 102 110)); } .ds-input { width: 100%; padding: 10px 14px; border: 1px solid rgb(var(--line, 222 222 226)); border-radius: 16px; background: rgb(var(--paper, 255 255 255)); color: rgb(var(--ink, 0 0 0)); font: inherit; font-size: 15px; line-height: 22px; transition: border-color 150ms, box-shadow 150ms; } .ds-input::placeholder { color: rgb(var(--graphite, 102 102 110)); } .ds-input:hover { border-color: rgb(var(--ink, 0 0 0) / 0.4); } .ds-input:focus { outline: none; border-color: rgb(var(--accent, 35 64 255)); box-shadow: 0 0 0 2px rgb(var(--accent, 35 64 255) / 0.25); }"
+    },
+    {
+      "name": "Status Badges",
+      "kind": "chip",
+      "refersTo": "badge-done",
+      "description": "State by shape: filled ink done, ink ring planned, dashed attention, mist neutral, signal tint for money and overdue.",
+      "html": "<div class=\"ds-badges\"><span class=\"ds-badge ds-badge-done\">Проверено</span><span class=\"ds-badge ds-badge-planned\">Выдано</span><span class=\"ds-badge ds-badge-attn\">Ждёт отметки</span><span class=\"ds-badge ds-badge-neutral\">На паузе</span><span class=\"ds-badge ds-badge-signal\">Просрочено</span></div>",
+      "css": ".ds-badges { display: flex; flex-wrap: wrap; gap: 6px; } .ds-badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 9999px; font-family: var(--font-sans, Onest, system-ui, sans-serif); font-size: 13px; line-height: 18px; font-weight: 500; white-space: nowrap; } .ds-badge-done { background: rgb(var(--ink, 0 0 0)); color: rgb(var(--paper, 255 255 255)); } .ds-badge-planned { color: rgb(var(--ink, 0 0 0)); box-shadow: inset 0 0 0 1px rgb(var(--ink, 0 0 0) / 0.5); } .ds-badge-attn { color: rgb(var(--ink, 0 0 0)); border: 1px dashed rgb(var(--ink, 0 0 0) / 0.5); } .ds-badge-neutral { background: rgb(var(--mist, 243 243 245)); color: rgb(var(--graphite, 102 102 110)); } .ds-badge-signal { background: rgb(var(--signal, 217 45 32) / 0.1); color: rgb(var(--signal, 217 45 32)); box-shadow: inset 0 0 0 1px rgb(var(--signal, 217 45 32) / 0.3); }"
+    },
+    {
+      "name": "Stat Mosaic",
+      "kind": "card",
+      "refersTo": "stat-tile",
+      "description": "Summary tiles on 1px hairline gaps, mono 28px values, signal when bad.",
+      "html": "<div class=\"ds-stats\"><div class=\"ds-stat\"><div class=\"ds-stat-label\">Получено за месяц</div><div class=\"ds-stat-value\">48 500 ₽</div><div class=\"ds-stat-sub\">22 занятия</div></div><div class=\"ds-stat\"><div class=\"ds-stat-label\">Долги</div><div class=\"ds-stat-value ds-bad\">−3 000 ₽</div><div class=\"ds-stat-sub\">2 ученика</div></div></div>",
+      "css": ".ds-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; overflow: hidden; border: 1px solid rgb(var(--line, 222 222 226)); border-radius: 20px; background: rgb(var(--line, 222 222 226)); font-family: var(--font-sans, Onest, system-ui, sans-serif); } .ds-stat { background: rgb(var(--paper, 255 255 255)); padding: 20px; } .ds-stat-label { font-size: 15px; color: rgb(var(--graphite, 102 102 110)); } .ds-stat-value { margin-top: 8px; font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; font-size: 28px; line-height: 1; font-weight: 500; white-space: nowrap; color: rgb(var(--ink, 0 0 0)); } .ds-stat-value.ds-bad { color: rgb(var(--signal, 217 45 32)); } .ds-stat-sub { margin-top: 8px; font-size: 13px; color: rgb(var(--graphite, 102 102 110)); }"
+    },
+    {
+      "name": "Glass Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Floating liquid-glass sidebar; pill items, the active one ultramarine.",
+      "html": "<nav class=\"ds-glass ds-nav\"><a class=\"ds-nav-item ds-active\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"/></svg>Главная</a><a class=\"ds-nav-item\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"3\" y=\"5\" width=\"18\" height=\"16\" rx=\"2\"/><path d=\"M3 10h18M8 3v4M16 3v4\"/></svg>Расписание</a><a class=\"ds-nav-item\" href=\"#\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z\"/></svg>Программа</a></nav>",
+      "css": ".ds-glass { position: relative; background: linear-gradient(180deg, rgb(var(--glass-tint, 255 255 255) / 0.72) 0%, rgb(var(--glass-tint, 255 255 255) / 0.58) 45%, rgb(var(--glass-tint, 255 255 255) / 0.52) 100%); -webkit-backdrop-filter: blur(18px) saturate(185%) contrast(1.04); backdrop-filter: blur(18px) saturate(185%) contrast(1.04); box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.85), inset 0 -1px 0 0 rgb(0 0 0 / 0.06), inset 0 0 0 1px rgb(255 255 255 / 0.28), 0 12px 32px -12px rgb(0 0 0 / 0.22), 0 2px 6px -2px rgb(0 0 0 / 0.08); } .ds-glass::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(120% 60% at 30% -10%, rgb(255 255 255 / 0.55), transparent 55%); mix-blend-mode: soft-light; } .ds-nav { display: flex; flex-direction: column; gap: 4px; width: 240px; padding: 16px; border-radius: 28px; font-family: var(--font-sans, Onest, system-ui, sans-serif); } .ds-nav-item { position: relative; display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 16px; border-radius: 9999px; font-size: 15px; font-weight: 500; color: rgb(var(--ink, 0 0 0) / 0.8); text-decoration: none; transition: background-color 150ms, color 150ms; } .ds-nav-item:hover { background: rgb(var(--ink, 0 0 0) / 0.06); color: rgb(var(--ink, 0 0 0)); } .ds-nav-item.ds-active { background: rgb(var(--accent, 35 64 255)); color: rgb(var(--on-accent, 255 255 255)); } .ds-nav-item:focus-visible { outline: 2px solid rgb(var(--accent, 35 64 255)); outline-offset: 2px; }"
+    },
+    {
+      "name": "Course Chart",
+      "kind": "custom",
+      "refersTo": "chart-header-band",
+      "description": "Signature code chart: inverse ink header bands with hex codes, status cells, ultramarine focus ring; others dim.",
+      "html": "<div class=\"ds-chart\"><div class=\"ds-h\"></div><div class=\"ds-h\">0</div><div class=\"ds-h\">1</div><div class=\"ds-h\">2</div><div class=\"ds-h\">3</div><div class=\"ds-h\">00</div><button class=\"ds-cell ds-mastered\"><span>00</span><em>92</em></button><button class=\"ds-cell ds-passed\"><span>01</span></button><button class=\"ds-cell ds-review\"><span>02</span><em>41</em></button><button class=\"ds-cell ds-progress ds-next\"><span>03</span></button><div class=\"ds-h\">04</div><button class=\"ds-cell\"><span>04</span></button><button class=\"ds-cell\"><span>05</span></button><div class=\"ds-cell ds-empty\"></div><div class=\"ds-cell ds-empty\"></div></div>",
+      "css": ".ds-chart { display: grid; grid-template-columns: 2.75rem repeat(4, 64px); overflow: hidden; border: 1px solid rgb(var(--ink, 0 0 0)); border-radius: 20px; background: rgb(var(--paper, 255 255 255)); font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace); font-variant-numeric: tabular-nums; } .ds-h { display: flex; align-items: center; justify-content: center; min-height: 28px; background: rgb(var(--ink, 0 0 0)); color: rgb(var(--paper, 255 255 255)); font-size: 13px; font-weight: 500; } .ds-cell { position: relative; display: flex; flex-direction: column; align-items: flex-start; height: 56px; padding: 6px; border: 0; border-left: 1px solid rgb(var(--line, 222 222 226)); border-top: 1px solid rgb(var(--line, 222 222 226)); background: transparent; color: rgb(var(--graphite, 102 102 110)); box-shadow: inset 0 0 0 1px rgb(var(--line, 222 222 226)); font: inherit; font-size: 13px; cursor: pointer; transition: opacity 200ms; } .ds-cell span { opacity: 0.7; font-weight: 500; } .ds-cell em { margin-top: auto; align-self: flex-end; font-style: normal; opacity: 0.8; } .ds-mastered { background: rgb(var(--ink, 0 0 0)); color: rgb(var(--paper, 255 255 255)); box-shadow: none; } .ds-passed { background: rgb(var(--ink, 0 0 0) / 0.25); color: rgb(var(--ink, 0 0 0)); box-shadow: none; } .ds-review { background: rgb(var(--signal, 217 45 32) / 0.15); color: rgb(var(--signal, 217 45 32)); box-shadow: inset 0 0 0 1px rgb(var(--signal, 217 45 32)); } .ds-progress { color: rgb(var(--ink, 0 0 0)); background-image: repeating-linear-gradient(135deg, rgb(var(--ink, 0 0 0) / 0.5) 0 1.5px, transparent 1.5px 6px); box-shadow: inset 0 0 0 1px rgb(var(--ink, 0 0 0) / 0.5); } .ds-next { box-shadow: inset 0 0 0 2px rgb(var(--accent, 35 64 255) / 0.7); } .ds-empty { background: rgb(var(--mist, 243 243 245) / 0.5); box-shadow: none; cursor: default; } .ds-chart:has(.ds-cell:hover) .ds-cell:not(:hover):not(.ds-empty), .ds-chart:has(.ds-cell:focus-visible) .ds-cell:not(:focus-visible):not(.ds-empty) { opacity: 0.35; } .ds-cell:hover, .ds-cell:focus-visible { z-index: 1; outline: none; box-shadow: inset 0 0 0 3px rgb(var(--accent, 35 64 255)); }"
+    },
+    {
+      "name": "File Kind Tag",
+      "kind": "chip",
+      "refersTo": "kind-tag-code",
+      "description": "Mono file-type tag: code inverse ink, links ultramarine ring, documents ink ring.",
+      "html": "<div class=\"ds-tags\"><span class=\"ds-tag ds-tag-code\">.py</span><span class=\"ds-tag\">PDF</span><span class=\"ds-tag ds-tag-link\">URL</span></div>",
+      "css": ".ds-tags { display: flex; gap: 6px; } .ds-tag { display: inline-flex; align-items: center; justify-content: center; height: 24px; min-width: 2.75rem; padding: 0 6px; border-radius: 6px; font-family: var(--font-mono, 'JetBrains Mono', ui-monospace, monospace); font-size: 13px; font-weight: 500; color: rgb(var(--ink, 0 0 0)); box-shadow: inset 0 0 0 1px rgb(var(--ink, 0 0 0) / 0.4); } .ds-tag-code { background: rgb(var(--ink, 0 0 0)); color: rgb(var(--paper, 255 255 255)); box-shadow: none; } .ds-tag-link { color: rgb(var(--accent, 35 64 255)); box-shadow: inset 0 0 0 1px rgb(var(--accent, 35 64 255) / 0.5); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Code Page",
+    "overview": "Everything in the cabinet has an address, like a glyph in a character encoding. Course topics are cells of a code table with hex addresses, today's lessons are cells of a strip, and summaries are tiles of a mosaic laid on 1px lines. The ground is white paper (pure black ink on it) ruled with a faint code-table grid; above that ground float a few panels of liquid glass, refractive and rim-lit, reserved for the things that move with the user: the sidebar, the mobile tab bar, modals, and the live readout of the course map.\n\nThe world is monochrome by doctrine. Rank comes from weight and inversion (a black band, a black cell, a black badge), not from hue. One ultramarine marks selection, the current thing, and the main action; one signal red marks money owed, overdue work, and destruction. Numbers (times, money, scores, addresses) are the primary information and are always set in a monospaced, tabular face. The density is that of a working tool: tight mosaics, hairline separators, sections opened by a rule rather than boxed in cards.\n\nThe system explicitly rejects the SaaS kit of identical shadowed cards with coloured icon plates. Paper surfaces lie flat; only glass casts a shadow.",
+    "keyCharacteristics": [
+      "White paper, pure black ink, a 40px code-table grid with every 4th line denser (160px).",
+      "Ultramarine only for selection, current state and the primary action; signal red only for debt, overdue and delete.",
+      "Three text sizes (13 / 15 / 28), plus two display uses: the page date and today's lesson times.",
+      "Onest for text, JetBrains Mono for every number and address.",
+      "Inverse black header bands with mono codes, as on a code chart.",
+      "Liquid glass for floating chrome only; everything on the paper is flat and ruled with 1px lines.",
+      "Status is read by shape (fill, outline, dashed, hatch, strike-through), never by a per-student colour."
+    ],
+    "rules": [
+      { "name": "The One Ultramarine Rule", "body": "Ultramarine means \"selected, current, or do this\". It is never decoration, never a section colour, never a chart series fill.", "section": "colors" },
+      { "name": "The Red Means Money Rule", "body": "Signal red is spent only on debt, overdue, no-show, review-needed and delete. If nothing is wrong, the screen has no red.", "section": "colors" },
+      { "name": "The Shape Not Hue Rule", "body": "State is read by form: filled ink = done or mastered, ink outline = planned or assigned, dashed outline = needs attention, hatch = in progress, strike-through on mist = cancelled. Legacy palette names (brand, slate, gray, amber, emerald, teal, sky, violet) are aliased to the neutral scale and rose to signal, so old colour classes cannot carry meaning.", "section": "colors" },
+      { "name": "The Three Sizes Rule", "body": "Interface text uses 13, 15 and 28 only; Tailwind's xs maps to 13, sm through xl all map to 15, 2xl and 3xl map to 28. Rank beyond that comes from weight and inversion. The two display uses above are the only exceptions.", "section": "typography" },
+      { "name": "The Mono For Facts Rule", "body": "Every time, sum, score, count and address is set in JetBrains Mono with tabular numerals and -0.02em tracking (the `.num` utility). Prose is never set in mono.", "section": "typography" },
+      { "name": "The Hairline Mosaic Rule", "body": "Groups of peers (stat tiles, today's lesson cells, chart cells) are separated by 1px gaps over a line- or ink-coloured backing, never by margins and shadows. The mosaic is clipped in a 20px-radius frame.", "section": "layout" },
+      { "name": "The Open Section Rule", "body": "A section is opened by a 1px top rule and a 52px header row, not by a box. A bordered box is reserved for an object that stands alone in a grid (a material, a test, a question).", "section": "layout" },
+      { "name": "The Glass Floats, Paper Lies Flat Rule", "body": "Only glass casts a shadow, and glass is only for chrome that floats over content: navigation, modals and sheets, the live readout. Cards, tiles, tables and fields never get a shadow.", "section": "elevation" },
+      { "name": "The Reduced Transparency Rule", "body": "Under `prefers-reduced-transparency: reduce` glass becomes solid surface with no blur and no highlight. Any new glass panel must inherit this.", "section": "elevation" },
+      { "name": "The Legible Core Rule", "body": "Glass frames reading content, it does not sit behind it: long-form content inside a glass modal (the code viewer) is set on an opaque paper panel with a 1px line. This is an accepted adaptation, not an exception to remove.", "section": "elevation" }
+    ],
+    "dos": [
+      "**Do** set every number, time, sum, score and hex address in JetBrains Mono with tabular numerals (`.num`).",
+      "**Do** express rank with weight and inversion: an ink band, an ink cell, an ink badge.",
+      "**Do** separate peers with 1px gaps over a line or ink backing inside a 20px frame.",
+      "**Do** reserve ultramarine for selection, the current item and the single primary action on a screen.",
+      "**Do** read status by shape: fill, ring, dashed, hatch, strike-through.",
+      "**Do** use glass only for floating chrome (navigation, modals, sheets, live readouts), and set long reading content on opaque paper inside it.",
+      "**Do** keep both themes working through the RGB-triplet custom properties; never hard-code a hex in a component.",
+      "**Do** keep pill controls at least 40px tall (44px for main buttons) for phone use."
+    ],
+    "donts": [
+      "**Don't** build screens from identical shadowed cards with coloured icon plates.",
+      "**Don't** put a shadow on paper surfaces: cards, tiles, tables, fields.",
+      "**Don't** use signal red for anything except debt, overdue, no-show, review-needed and delete.",
+      "**Don't** use ultramarine as decoration, a section colour, or a chart series fill.",
+      "**Don't** introduce a text size outside 13 / 15 / 28 beyond the page date and today's lesson times.",
+      "**Don't** give students or categories their own colours; avatars are ink circles with initials.",
+      "**Don't** add authored animations beyond the course-chart `cell-in`; state changes are short colour or opacity transitions, and all motion collapses under `prefers-reduced-motion`."
+    ]
+  }
+}

@@ -10,9 +10,10 @@ import {
   ASSESSMENT_KIND, HW_STATUS, LESSON_STATUS, PAYMENT_KIND, PAYMENT_METHOD, STUDENT_STATUS, TOPIC_STATUS, conflicts, convertScore,
   generateSeriesLessons, isLateCancel, ledger, newLesson, studentDuration, studentPrice, studentTopicList,
 } from "@/lib/logic";
-import { addDays, addMonths, combine, fmtDate, fmtTime, rub, todayYmd, uid, ymd, WEEKDAYS, weekdayMon, parseYmd } from "@/lib/utils";
+import { cls, addDays, addMonths, combine, fmtDate, fmtTime, rub, todayYmd, uid, ymd, WEEKDAYS, weekdayMon, parseYmd } from "@/lib/utils";
 import { Badge, Button, Checkbox, Field, Input, Modal, MultiPick, Select, Textarea, useConfirm } from "./ui";
 import { Icon } from "./Icon";
+import { CodeViewer, KindTag, fileKind } from "./files";
 
 // ---------------------------------------------------------------- общие
 
@@ -36,12 +37,16 @@ export function StudentSelect({ value, onChange, includeInactive, allowEmpty }: 
   );
 }
 
-export function Attachments({ value, onChange, readOnly }: { value: Attachment[]; onChange?: (v: Attachment[]) => void; readOnly?: boolean }) {
+/** bare — строки прямо на линиях родителя, без собственной рамки (внутри списков занятий) */
+export function Attachments({ value, onChange, readOnly, accept, bare }: { value: Attachment[]; onChange?: (v: Attachment[]) => void; readOnly?: boolean; accept?: string; bare?: boolean }) {
   const { backend, toast } = useStore();
   const [url, setUrl] = useState("");
   const [busy, setBusy] = useState(false);
+  const [viewing, setViewing] = useState<Attachment | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const open = async (a: Attachment) => {
+    // код открывается во встроенном просмотрщике с подсветкой, остальное — в новой вкладке
+    if (fileKind(a).code) return setViewing(a);
     try {
       const href = await backend!.fileUrl(a);
       if (href.startsWith("data:")) {
@@ -49,7 +54,7 @@ export function Attachments({ value, onChange, readOnly }: { value: Attachment[]
         if (w) w.document.write(`<iframe src="${href}" style="border:0;width:100%;height:100%"></iframe>`);
       } else window.open(href, "_blank", "noopener");
     } catch (e) {
-      toast((e as Error).message, "error");
+      toast(`Не удалось открыть «${a.name}»: ${(e as Error).message}`, "error");
     }
   };
   const addLink = () => {
@@ -57,7 +62,7 @@ export function Attachments({ value, onChange, readOnly }: { value: Attachment[]
     if (!u) return;
     const href = /^https?:\/\//i.test(u) ? u : `https://${u}`;
     let name = href;
-    try { name = new URL(href).hostname; } catch {}
+    try { const x = new URL(href); name = x.hostname + (x.pathname.length > 1 ? x.pathname : ""); } catch {}
     onChange?.([...value, { name, url: href }]);
     setUrl("");
   };
@@ -69,7 +74,7 @@ export function Attachments({ value, onChange, readOnly }: { value: Attachment[]
       for (const f of Array.from(files)) added.push(await backend!.upload(f));
       onChange?.([...value, ...added]);
     } catch (e) {
-      toast((e as Error).message, "error");
+      toast(`Файл не загрузился: ${(e as Error).message}`, "error");
     } finally {
       setBusy(false);
       if (fileRef.current) fileRef.current.value = "";
@@ -77,21 +82,31 @@ export function Attachments({ value, onChange, readOnly }: { value: Attachment[]
   };
   return (
     <div className="space-y-2">
-      {value.map((a, i) => (
-        <div key={i} className="flex items-center gap-2 rounded-lg bg-mist px-3 py-1.5 text-sm">
-          <Icon name={a.path || a.url?.startsWith("data:") ? "paperclip" : "link"} className="w-4 h-4 shrink-0 text-graphite" />
-          <button type="button" onClick={() => open(a)} className="min-w-0 flex-1 truncate text-left text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink">{a.name}</button>
-          {!readOnly && <button type="button" onClick={() => onChange?.(value.filter((_, j) => j !== i))} className="text-graphite hover:text-signal" aria-label="Убрать"><Icon name="x" className="w-4 h-4" /></button>}
-        </div>
-      ))}
+      {value.length > 0 && (
+        <ul className={bare ? "divide-y divide-line border-t border-line" : "divide-y divide-line overflow-hidden rounded-xl border border-line bg-paper"}>
+          {value.map((a, i) => (
+            <li key={i} className={cls("flex min-h-[48px] items-center gap-3", bare ? "px-0" : "px-3")}>
+              <KindTag a={a} />
+              <button type="button" onClick={() => open(a)} className="min-w-0 flex-1 truncate py-2 text-left text-sm font-medium hover:text-accent">{a.name}</button>
+              <span className="hidden text-xs text-graphite sm:inline">{fileKind(a).code ? "открыть код" : fileKind(a).link ? "перейти" : "открыть"}</span>
+              {!readOnly && (
+                <button type="button" onClick={() => onChange?.(value.filter((_, j) => j !== i))} className="flex h-8 w-8 items-center justify-center rounded-full text-graphite hover:bg-mist hover:text-signal" aria-label={`Убрать ${a.name}`}>
+                  <Icon name="x" className="w-4 h-4" />
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
       {!readOnly && (
         <div className="flex flex-wrap gap-2">
-          <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="Ссылка: https://…" className="min-w-0 flex-1" onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addLink())} />
-          <Button variant="secondary" icon="link" onClick={addLink}>Добавить</Button>
-          <Button variant="secondary" icon="upload" disabled={busy} onClick={() => fileRef.current?.click()}>{busy ? "Загрузка…" : "Файл"}</Button>
-          <input ref={fileRef} type="file" multiple hidden onChange={(e) => upload(e.target.files)} />
+          <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="Ссылка: https://…" aria-label="Ссылка на материал" className="min-w-0 flex-1" onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addLink())} />
+          <Button variant="secondary" icon="link" onClick={addLink} disabled={!url.trim()}>Добавить ссылку</Button>
+          <Button variant="secondary" icon="upload" disabled={busy} onClick={() => fileRef.current?.click()}>{busy ? "Загружаю…" : "Загрузить файлы"}</Button>
+          <input ref={fileRef} type="file" multiple hidden accept={accept} onChange={(e) => upload(e.target.files)} />
         </div>
       )}
+      {viewing && <CodeViewer attachment={viewing} onClose={() => setViewing(null)} />}
     </div>
   );
 }
@@ -193,6 +208,7 @@ export function LessonModal({ open, onClose, lesson, preset, report }: {
   const nextLesson = lesson ? db.lessons.filter((l) => l.student_id === lesson.student_id && l.starts_at > lesson.starts_at && l.status === "planned").sort((a, b) => a.starts_at.localeCompare(b.starts_at))[0] : undefined;
   const [hwDue, setHwDue] = useState(existingHw?.due_date ?? (nextLesson ? ymd(new Date(nextLesson.starts_at)) : ymd(addDays(new Date(), 7))));
   const [comment, setComment] = useState(lesson?.comment ?? "");
+  const [materials, setMaterials] = useState<Attachment[]>(lesson?.attachments ?? []);
   const [grade, setGrade] = useState<number | null>(lesson?.grade ?? null);
   const [tab, setTab] = useState<"main" | "report">(report ? "report" : "main");
 
@@ -212,7 +228,7 @@ export function LessonModal({ open, onClose, lesson, preset, report }: {
     if (!studentId) return;
     const base = {
       student_id: studentId, starts_at: startsAt, duration: effDuration, price: effPrice, status, late_cancel: status === "cancelled_student" && lateCancel,
-      topic_ids: topicIds, report_covered: covered, report_homework: hwText, comment, grade,
+      topic_ids: topicIds, report_covered: covered, report_homework: hwText, comment, grade, attachments: materials,
     };
     let lessonId = lesson?.id;
     if (isNew && repeat) {
@@ -321,7 +337,7 @@ export function LessonModal({ open, onClose, lesson, preset, report }: {
             </div>
           )}
           {clash.length > 0 && !repeat && (
-            <p className="flex items-center gap-1.5 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800 sm:col-span-2">
+            <p className="flex items-center gap-1.5 rounded-lg bg-mist px-3 py-2 text-sm text-ink sm:col-span-2">
               <Icon name="alert" className="w-4 h-4" />Пересекается: {clash.map((c) => `${db.students.find((s) => s.id === c.student_id)?.full_name} ${fmtTime(c.starts_at)}`).join(", ")}
             </p>
           )}
@@ -356,6 +372,11 @@ export function LessonModal({ open, onClose, lesson, preset, report }: {
           </Field>
           {hwText.trim() && status === "done" && <Field label="Срок сдачи ДЗ"><Input type="date" value={hwDue} onChange={(e) => setHwDue(e.target.value)} /></Field>}
           <Field label="Комментарий" className="sm:col-span-2"><Textarea value={comment} onChange={(e) => setComment(e.target.value)} /></Field>
+          <div className="sm:col-span-2">
+            <div className="mb-1.5 text-sm font-medium">Материалы для повторения</div>
+            <p className="mb-2 text-xs text-graphite">Код с занятия, конспект в PDF, презентация или ссылка. Ученик увидит их в своём кабинете у этого занятия.</p>
+            <Attachments value={materials} onChange={setMaterials} accept=".py,.pyw,.txt,.c,.cpp,.java,.js,.ts,.pas,.cs,.sql,.csv,.json,.md,.pdf,.ppt,.pptx,.key,.odp,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" />
+          </div>
         </div>
       )}
     </Modal>

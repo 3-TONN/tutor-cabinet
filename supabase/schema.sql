@@ -103,6 +103,8 @@ create table if not exists public.lessons (
   comment text not null default '',
   grade int check (grade between 1 and 5)
 );
+-- материалы для повторения после занятия (код, PDF, презентации, ссылки)
+alter table public.lessons add column if not exists attachments jsonb not null default '[]'::jsonb;
 
 create table if not exists public.subscriptions (
   id uuid primary key default gen_random_uuid(),

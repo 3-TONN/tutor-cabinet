@@ -5,3 +5,7 @@ node_modules
 next-env.d.ts
 out
 .claude
+.impeccable/questions
+.impeccable/review
+.impeccable/decision-payload.json
+.impeccable/brief-app.md

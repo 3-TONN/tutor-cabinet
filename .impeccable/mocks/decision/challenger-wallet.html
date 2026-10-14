@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:#F4F5F8;color:#14224A;font:15px/1.4 Onest,sans-serif;display:grid;grid-template-columns:232px 1fr}
+aside{background:#14224A;color:#fff;padding:24px 16px}
+aside b{display:block;margin:0 8px 26px}
+aside a{display:block;padding:9px 12px;color:#c9d0e6}
+aside a.on{background:#C8102E;color:#fff;font-weight:700}
+main{padding:30px 40px}
+h1{font:700 38px Onest;margin-bottom:22px}
+.coupons{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:34px}
+.cp{background:#fff;border:1px solid #14224A;position:relative}
+.cp .hd{background:#14224A;color:#fff;padding:6px 14px;font:700 12px Onest;letter-spacing:.06em}
+.cp .bd{display:grid;grid-template-columns:1fr 1fr;border-top:1px dashed #14224A}
+.cp .f{padding:10px 14px;border-right:1px solid #d7dbe8;border-bottom:1px solid #d7dbe8}
+.cp .f small{display:block;font-size:11px;color:#6b7391}
+.cp .f span{font:500 24px 'JetBrains Mono';color:#5B3A8C}
+.stamp{position:absolute;right:16px;top:44px;border:3px solid #C8102E;color:#C8102E;font:700 20px Onest;padding:2px 10px;transform:rotate(-12deg)}
+.stamp.ok{border-color:#14224A;color:#14224A}
+h2{font:700 15px Onest;margin-bottom:12px}
+.book{display:flex;gap:6px;margin-bottom:16px;align-items:center}
+.book span{width:44px;height:28px;border:1px solid #14224A;background:#fff}
+.book span.u{background:#d7dbe8;border-style:dashed}
+.book b{width:220px}
+</style></head><body>
+<aside><b>Кабинет репетитора</b><a class="on">Главная</a><a>Расписание</a><a>Ученики</a><a>Программа</a><a>Контроль знаний</a><a>Домашние задания</a><a>Оплаты</a><a>Отчёты</a><a>Материалы</a></aside>
+<main>
+<h1>Вторник, 14 октября</h1>
+<div class="coupons">
+<div class="cp"><div class="hd">ЗАНЯТИЕ · КУПОН 3/4</div><div class="bd"><div class="f"><small>Время</small><span>15:00</span></div><div class="f"><small>Ученик</small>Козлов Максим</div><div class="f"><small>Тема</small>Рекурсия</div><div class="f"><small>Формат</small>онлайн</div></div><div class="stamp ok">ПРОВЕДЕНО</div></div>
+<div class="cp"><div class="hd">ЗАНЯТИЕ · КУПОН 6/8</div><div class="bd"><div class="f"><small>Время</small><span>17:00</span></div><div class="f"><small>Ученик</small>Петров Иван</div><div class="f"><small>Тема</small>Адресация в сети 2</div><div class="f"><small>Формат</small>онлайн</div></div></div>
+<div class="cp"><div class="hd">ЗАНЯТИЕ · РАЗОВОЕ</div><div class="bd"><div class="f"><small>Время</small><span>19:30</span></div><div class="f"><small>Ученик</small>Смирнова Анна</div><div class="f"><small>Тема</small>Python. Списки 1</div><div class="f"><small>Формат</small>очно</div></div><div class="stamp">VOID</div></div>
+</div>
+<h2>Абонементы</h2>
+<div class="book"><b>Петров Иван · 8 занятий</b><span class="u"></span><span class="u"></span><span class="u"></span><span class="u"></span><span class="u"></span><span></span><span></span><span></span></div>
+<div class="book"><b>Козлов Максим · 4 занятия</b><span class="u"></span><span class="u"></span><span class="u"></span><span></span></div>
+<div class="book"><b>Смирнова Анна · разовые</b><span style="border-color:#C8102E;color:#C8102E"></span> долг 3 000 ₽</div>
+</main></body></html>

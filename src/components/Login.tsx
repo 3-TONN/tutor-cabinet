@@ -44,7 +44,7 @@ export function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <form onSubmit={submit} className="w-full max-w-sm">
+      <form onSubmit={submit} className="glass glass-strong w-full max-w-sm rounded-3xl p-7">
         <div className="mb-10 flex items-center gap-3">
           <span className="num flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-sm font-semibold text-paper">{"{}"}</span>
           <div>

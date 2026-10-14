@@ -126,7 +126,7 @@ export default function RunQuizPage() {
           const ok = pts != null && pts === q.points;
           const a = answers[q.id];
           return (
-            <Card key={q.id} className={points ? (ok ? "border-emerald-300" : "border-rose-300") : ""}>
+            <Card key={q.id} className={points ? (ok ? "border-ink/40" : "border-signal") : ""}>
               <div className="mb-2 flex items-start gap-2">
                 <span className="text-sm font-semibold text-graphite">{i + 1}.</span>
                 <p className="flex-1 whitespace-pre-line font-medium">{q.text}</p>
@@ -140,7 +140,7 @@ export default function RunQuizPage() {
                     const sel = q.type === "single" ? String(a ?? "") === String(oi) : Array.isArray(a) && a.includes(String(oi));
                     const correct = q.correct.includes(oi);
                     return (
-                      <label key={oi} className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${points && correct ? "border-emerald-400 bg-emerald-50" : points && sel ? "border-rose-400 bg-rose-50" : sel ? "border-ink bg-mist" : "border-line"}`}>
+                      <label key={oi} className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${points && correct ? "border-ink/40 bg-mist" : points && sel ? "border-signal bg-signal/10" : sel ? "border-ink bg-mist" : "border-line"}`}>
                         <input type={q.type === "single" ? "radio" : "checkbox"} name={q.id} className="accent-ink" checked={sel} disabled={!!points}
                           onChange={(e) => q.type === "single" ? setAnswer(q, String(oi)) : setAnswer(q, e.target.checked ? [...(Array.isArray(a) ? a : []), String(oi)] : (Array.isArray(a) ? a : []).filter((x) => x !== String(oi)))} />
                         {o}
@@ -151,7 +151,7 @@ export default function RunQuizPage() {
               )}
               {points && (
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
-                  {ok ? <span className="text-emerald-600"><Icon name="check" className="mr-1 inline w-4 h-4" />Верно</span> : <span className="text-signal"><Icon name="x" className="mr-1 inline w-4 h-4" />{needsManual(q) ? "Нужна проверка" : "Неверно"}</span>}
+                  {ok ? <span className="text-ink"><Icon name="check" className="mr-1 inline w-4 h-4" />Верно</span> : <span className="text-signal"><Icon name="x" className="mr-1 inline w-4 h-4" />{needsManual(q) ? "Нужна проверка" : "Неверно"}</span>}
                   {q.type === "open" && q.answer && <span className="text-graphite">Ответ: {q.answer}</span>}
                   {q.type === "open" && (
                     <span className="ml-auto flex items-center gap-1 text-xs text-graphite">

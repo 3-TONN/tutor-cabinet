@@ -189,7 +189,7 @@ export function generateSeriesLessons(
 
 export const newLesson = (p: Partial<Lesson> & { student_id: string; starts_at: string; price: number; duration: number }): Lesson => ({
   id: uid(), series_id: null, status: "planned", late_cancel: false, topic_ids: [], report_covered: "",
-  report_homework: "", comment: "", grade: null, ...p,
+  report_homework: "", comment: "", grade: null, attachments: [], ...p,
 });
 
 export const lessonEnd = (l: Lesson) => new Date(new Date(l.starts_at).getTime() + l.duration * 60000);

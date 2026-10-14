@@ -89,6 +89,7 @@ export interface Lesson {
   report_homework: string;
   comment: string;
   grade: number | null; // оценка работы на занятии 1–5
+  attachments?: Attachment[]; // материалы для повторения: код, PDF, презентации, ссылки
 }
 
 export type PaymentMethod = "cash" | "transfer" | "card";

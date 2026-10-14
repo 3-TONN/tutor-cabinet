@@ -159,6 +159,12 @@ export function buildDemoData(): DB {
       l.report_homework = pick(HW_TEXTS);
       l.comment = pick(COMMENTS);
       l.grade = clamp(Math.round(3 + (p.skill - 55) / 15 + (r() - 0.5)), 3, 5);
+      // материалы для повторения: код с занятия и ссылка на задания
+      if (r() < 0.6) {
+        const slug = translit(t.name);
+        l.attachments = [{ name: `${slug}.py`, url: codeFile(t.name) }];
+        if (r() < 0.5) l.attachments.push({ name: "fipi.ru/ege/otkrytyy-bank-zadaniy-ege", url: "https://fipi.ru/ege/otkrytyy-bank-zadaniy-ege" });
+      }
 
       // ДЗ к занятию
       const next = lessons.find((n) => n.starts_at > l.starts_at && n.status !== "cancelled_tutor");
@@ -305,4 +311,31 @@ export function buildDemoData(): DB {
   );
 
   return db;
+}
+
+// ---------------------------------------------------------------- демо-материалы
+
+const TR: Record<string, string> = { а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "e", ж: "zh", з: "z", и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o", п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "c", ч: "ch", ш: "sh", щ: "sch", ы: "y", э: "e", ю: "yu", я: "ya" };
+const translit = (s: string) =>
+  s.toLowerCase().replace(/[а-яё]/g, (c) => TR[c] ?? "").replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 40) || "lesson";
+
+/** Небольшая программа с занятия — в демо-режиме хранится прямо в ссылке data: */
+function codeFile(topic: string) {
+  const code = `# ${topic}: разбор с занятия
+# Перед запуском прочитайте условие в комментарии и попробуйте решить сами.
+
+def solve(n: int) -> int:
+    """Считаем, сколько чисел от 1 до n делятся на 3 или на 5."""
+    count = 0
+    for x in range(1, n + 1):
+        if x % 3 == 0 or x % 5 == 0:
+            count += 1
+    return count
+
+
+if __name__ == "__main__":
+    print(solve(100))   # ответ: 47
+    print(bin(47), hex(47))
+`;
+  return `data:text/x-python;charset=utf-8,${encodeURIComponent(code)}`;
 }

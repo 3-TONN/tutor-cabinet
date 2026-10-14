@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:#fff;color:#111;font:15px/1.4 Onest,sans-serif;display:grid;grid-template-columns:240px 1fr}
+aside{background:#F2F2F2;padding:24px 14px}
+aside b{display:block;font-weight:700;margin:0 10px 26px}
+aside a{display:block;padding:9px 12px;border-radius:6px;color:#111}
+aside a.on{background:#1A56DB;color:#fff}
+main{padding:30px 40px;display:grid;grid-template-columns:1fr 1fr;gap:28px}
+h1{grid-column:1/3;font:700 38px Onest;letter-spacing:-.02em}
+.flow{position:relative}
+.flow h2,.course h2{font:700 15px Onest;margin-bottom:14px}
+.blk{border:1.5px solid #111;padding:14px 18px;width:360px;background:#fff}
+.blk .t{font:500 34px 'JetBrains Mono'}
+.term{border-radius:40px;text-align:center;width:220px;margin-left:70px}
+.arrow{width:1.5px;height:34px;background:#111;margin-left:180px;position:relative}
+.arrow:after{content:"";position:absolute;bottom:-1px;left:-5px;border:6px solid transparent;border-top:8px solid #111}
+.dia{width:190px;height:190px;transform:rotate(45deg) scale(.62);border:2.4px solid #1A56DB;margin:-34px 0 -34px 85px;display:grid;place-items:center}
+.dia span{transform:rotate(-45deg);font-weight:700;color:#1A56DB;text-align:center}
+.yes{font:500 13px 'JetBrains Mono';color:#1A56DB;margin-left:200px}
+.course{border-left:1.5px solid #111;padding-left:26px}
+.step{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.step i{width:14px;height:14px;border:1.5px solid #111;flex:none}
+.step.done i{background:#111}.step.now i{background:#1A56DB;border-color:#1A56DB}
+.step.cp i{transform:rotate(45deg);border-color:#1A56DB}
+.step.cp{color:#1A56DB;font-weight:700}
+</style></head><body>
+<aside><b>Кабинет репетитора</b><a class="on">Главная</a><a>Расписание</a><a>Ученики</a><a>Программа</a><a>Контроль знаний</a><a>Домашние задания</a><a>Оплаты</a><a>Отчёты</a><a>Материалы</a></aside>
+<main>
+<h1>Вторник, 14 октября</h1>
+<div class="flow"><h2>Сегодня</h2>
+<div class="blk term">Начало дня · 4 занятия</div><div class="arrow"></div>
+<div class="blk"><div class="t">17:00</div><b>Петров Иван</b><div>Адресация в сети 2</div></div><div class="arrow"></div>
+<div class="dia"><span>Проведено?</span></div>
+<div class="yes">да → отчёт и ДЗ · нет → перенос</div><div class="arrow"></div>
+<div class="blk"><div class="t">19:30</div><b>Смирнова Анна</b><div>Python. Списки 1</div></div>
+</div>
+<div class="course"><h2>Курс · Петров Иван · 37 из 82</h2>
+<div class="step done"><i></i>Системы счисления</div><div class="step done"><i></i>Комбинаторика 1</div><div class="step done"><i></i>Базы данных</div><div class="step done"><i></i>Python. Строки 2</div><div class="step done"><i></i>Адресация в сети 1</div>
+<div class="step cp"><i></i>Контрольная работа 2 · 22 / 30</div>
+<div class="step done"><i></i>Робот в электронных таблицах 1</div><div class="step now"><i></i>Адресация в сети 2 — сегодня</div>
+<div class="step cp"><i></i>Дополнительная симуляция 2</div>
+<div class="step"><i></i>Исполнитель. Редактор 2</div><div class="step"><i></i>Python. Комбинаторика</div><div class="step"><i></i>Исполнитель. Робот и Чертёжник</div>
+</div>
+</main></body></html>

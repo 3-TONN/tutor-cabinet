@@ -58,7 +58,8 @@ export const combine = (date: string, time: string) => {
 };
 
 export const rub = (n: number) =>
-  `${Math.round(n).toLocaleString("ru-RU").replace(/ /g, " ")} ₽`;
+  // неразрывные пробелы: сумма никогда не переносится посередине («43 950 ₽»)
+  `${Math.round(n).toLocaleString("ru-RU").replace(/[\s\u00a0\u202f]/g, "\u00a0")}\u00a0₽`;
 export const pct = (n: number) => `${Math.round(n)}%`;
 
 export function plural(n: number, one: string, few: string, many: string) {

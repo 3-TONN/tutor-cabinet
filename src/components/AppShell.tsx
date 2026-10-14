@@ -82,7 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   if (role === "none")
     return (
       <div className="flex min-h-screen items-center justify-center p-6">
-        <div className="max-w-md text-center">
+        <div className="glass glass-strong max-w-md rounded-3xl p-8 text-center">
           <span className="num mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-ink text-sm font-semibold text-paper">{"{}"}</span>
           <h1 className="text-2xl font-bold tracking-tight">Нет доступа к кабинету</h1>
           <p className="mt-3 text-graphite">
@@ -101,16 +101,16 @@ export function AppShell({ children }: { children: ReactNode }) {
   const navLink = (n: (typeof NAV)[number]) => (
     <Link key={n.href} href={n.href} aria-current={isActive(path, n.href) ? "page" : undefined}
       className={cls("flex h-10 items-center gap-3 rounded-full px-4 text-sm font-medium transition-colors",
-        isActive(path, n.href) ? "bg-ink text-paper" : "text-ink/75 hover:bg-mist hover:text-ink")}>
+        isActive(path, n.href) ? "bg-accent text-on-accent" : "text-ink/80 hover:bg-ink/[0.06] hover:text-ink")}>
       <Icon name={n.icon} className="w-[18px] h-[18px]" />
       {n.label}
     </Link>
   );
 
   return (
-    <div className="min-h-screen lg:pl-72">
+    <div className="min-h-screen lg:pl-[19rem]">
       {/* боковое меню (компьютер) */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 flex-col border-r border-line bg-paper px-4 py-6 lg:flex no-print">
+      <aside className="glass fixed inset-y-3 left-3 z-30 hidden w-[17.25rem] flex-col rounded-3xl px-4 py-6 lg:flex no-print">
         <Link href="/" className="mb-8 flex items-center gap-3 px-2">
           <span className="num flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-sm font-semibold text-paper">{"{}"}</span>
           <span className="leading-tight">
@@ -140,12 +140,12 @@ export function AppShell({ children }: { children: ReactNode }) {
       <main className="mx-auto max-w-6xl px-4 pb-32 pt-8 sm:px-8 lg:pb-12 lg:pt-12">{children}</main>
 
       {/* нижняя навигация (телефон) */}
-      <nav aria-label="Основное меню" className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-line bg-paper pb-[env(safe-area-inset-bottom)] lg:hidden no-print">
+      <nav aria-label="Основное меню" className="glass fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid grid-cols-5 rounded-[1.75rem] px-1 lg:hidden no-print">
         {NAV.filter((n) => MOBILE_MAIN.includes(n.href)).map((n) => {
           const on = isActive(path, n.href);
           return (
             <Link key={n.href} href={n.href} aria-current={on ? "page" : undefined} className={cls("flex flex-col items-center gap-1 pb-2 pt-2.5 text-[11px] font-medium", on ? "text-ink" : "text-graphite")}>
-              <span className={cls("flex h-8 w-14 items-center justify-center rounded-full transition-colors", on && "bg-ink text-paper")}><Icon name={n.icon} className="w-5 h-5" /></span>
+              <span className={cls("flex h-8 w-14 items-center justify-center rounded-full transition-colors", on && "bg-accent text-on-accent")}><Icon name={n.icon} className="w-5 h-5" /></span>
               {n.label === "Оплаты и финансы" ? "Финансы" : n.label}
             </Link>
           );
@@ -154,20 +154,20 @@ export function AppShell({ children }: { children: ReactNode }) {
           const on = NAV.some((n) => !MOBILE_MAIN.includes(n.href) && isActive(path, n.href));
           return (
             <button type="button" onClick={() => setMore(true)} aria-haspopup="dialog" className={cls("flex flex-col items-center gap-1 pb-2 pt-2.5 text-[11px] font-medium", on ? "text-ink" : "text-graphite")}>
-              <span className={cls("flex h-8 w-14 items-center justify-center rounded-full", on && "bg-ink text-paper")}><Icon name="menu" className="w-5 h-5" /></span>Ещё
+              <span className={cls("flex h-8 w-14 items-center justify-center rounded-full", on && "bg-accent text-on-accent")}><Icon name="menu" className="w-5 h-5" /></span>Ещё
             </button>
           );
         })()}
       </nav>
 
       {more && (
-        <div className="fixed inset-0 z-50 flex items-end bg-black/50 lg:hidden" onClick={() => setMore(false)}>
-          <div role="dialog" aria-label="Все разделы" className="w-full rounded-t-3xl bg-surface p-4 pb-[max(1rem,env(safe-area-inset-bottom))]" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-end bg-black/35 lg:hidden" onClick={() => setMore(false)}>
+          <div role="dialog" aria-label="Все разделы" className="glass glass-strong w-full rounded-t-3xl p-4 pb-[max(1rem,env(safe-area-inset-bottom))]" onClick={(e) => e.stopPropagation()}>
             <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-line" />
             <div className="grid grid-cols-3 gap-2">
               {NAV.filter((n) => !MOBILE_MAIN.includes(n.href)).map((n) => (
                 <Link key={n.href} href={n.href} onClick={() => setMore(false)}
-                  className={cls("flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl p-3 text-center text-xs font-medium", isActive(path, n.href) ? "bg-ink text-paper" : "bg-mist text-ink")}>
+                  className={cls("flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl p-3 text-center text-xs font-medium", isActive(path, n.href) ? "bg-accent text-on-accent" : "bg-paper/70 text-ink ring-1 ring-inset ring-line")}>
                   <Icon name={n.icon} className="w-6 h-6" />
                   {n.label}
                 </Link>

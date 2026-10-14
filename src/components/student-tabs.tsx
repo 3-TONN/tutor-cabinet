@@ -11,10 +11,11 @@ import {
   convertScore, homeworkStats, hwEffective, ledger, progress, studentTopicList, topicNames, topicScores, topicStatus, weakTopics,
 } from "@/lib/logic";
 import { fmtDate, fmtDateTime, fmtTime, rub, todayYmd, uid, plural } from "@/lib/utils";
-import { Badge, Button, Card, Empty, Progress, Segmented, Select, Table, Textarea, useConfirm } from "./ui";
+import { Badge, Button, Card, Empty, Progress, SearchInput, Segmented, Select, Table, Textarea, useConfirm } from "./ui";
 import { AssessmentModal, Attachments, HomeworkModal, LessonModal, PaymentModal } from "./forms";
 import { BarChart, HBars, LineChart } from "./Charts";
 import { Icon } from "./Icon";
+import { CourseChart } from "./CourseChart";
 
 // ---------------------------------------------------------------- Занятия
 
@@ -42,31 +43,48 @@ export function LessonsTab({ studentId, readOnly }: { studentId: string; readOnl
         </p>
       )}
       {list.length ? (
-        <div className="space-y-2">
+        <div className="divide-y divide-line border-y border-ink bg-paper">
           {list.slice(0, 60).map((l) => {
             const charge = lg.charges.get(l.id);
+            const files = l.attachments ?? [];
             return (
-              <button key={l.id} type="button" disabled={readOnly} onClick={() => setModal({ lesson: l })}
-                className="block w-full rounded-lg border border-line bg-surface p-3 text-left disabled:cursor-default">
-                <div className="flex flex-wrap items-center gap-2 text-sm">
-                  <span className="font-semibold tabular-nums">{fmtDate(l.starts_at)} {fmtTime(l.starts_at)}</span>
-                  <Badge color={LESSON_STATUS[l.status].color}>{LESSON_STATUS[l.status].label}</Badge>
-                  {l.grade != null && <Badge color="violet">оценка {l.grade}</Badge>}
-                  <span className="ml-auto text-xs text-graphite">{charge ? (charge.subscription_id ? "по абонементу" : rub(charge.amount)) : ""}</span>
-                </div>
-                {l.topic_ids.length > 0 && <div className="mt-1 text-sm">{topicNames(db, l.topic_ids).join(", ")}</div>}
-                {l.report_covered && <div className="mt-1 text-sm text-graphite dark:text-graphite">Прошли: {l.report_covered}</div>}
-                {l.report_homework && <div className="text-sm text-graphite dark:text-graphite">Задано: {l.report_homework}</div>}
-                {l.comment && <div className="mt-1 text-xs italic text-graphite">{l.comment}</div>}
-                {!readOnly && l.status === "planned" && l.starts_at < now && (
-                  <span className="mt-2 inline-block text-xs font-medium text-amber-600">Нажмите, чтобы отметить занятие</span>
+              <article key={l.id}>
+                <button type="button" disabled={readOnly} onClick={() => setModal({ lesson: l })}
+                  className="block w-full px-4 py-4 text-left disabled:cursor-default enabled:hover:bg-accent/[0.04]">
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    <span className="num font-medium">{fmtDate(l.starts_at)} · {fmtTime(l.starts_at)}</span>
+                    <Badge color={LESSON_STATUS[l.status].color}>{LESSON_STATUS[l.status].label}</Badge>
+                    {l.grade != null && <Badge color="violet">оценка {l.grade}</Badge>}
+                    <span className="num ml-auto text-xs text-graphite">{charge ? (charge.subscription_id ? "по абонементу" : rub(charge.amount)) : ""}</span>
+                  </div>
+                  {l.topic_ids.length > 0 && <div className="mt-2 font-medium">{topicNames(db, l.topic_ids).join(", ")}</div>}
+                  {l.report_covered && <div className="mt-1 text-sm text-graphite">Прошли: {l.report_covered}</div>}
+                  {l.report_homework && <div className="text-sm text-graphite">Задано: {l.report_homework}</div>}
+                  {l.comment && <div className="mt-1 text-sm italic text-graphite">{l.comment}</div>}
+                  {!readOnly && l.status === "planned" && l.starts_at < now && (
+                    <span className="mt-2 inline-block text-sm font-medium text-accent">Отметить занятие</span>
+                  )}
+                </button>
+                {(files.length > 0 || (!readOnly && l.status === "done")) && (
+                  <div className="px-4 pb-4">
+                    {files.length > 0 ? (
+                      <>
+                        <div className="mb-2 text-xs font-medium text-graphite">Материалы для повторения · {files.length}</div>
+                        <Attachments value={files} readOnly bare />
+                      </>
+                    ) : (
+                      <button type="button" onClick={() => setModal({ lesson: l })} className="text-sm font-medium text-accent hover:underline">
+                        Добавить материалы к занятию
+                      </button>
+                    )}
+                  </div>
                 )}
-              </button>
+              </article>
             );
           })}
         </div>
       ) : <Empty icon="calendar" title={mode === "future" ? "Нет запланированных занятий" : "Пока нет прошедших занятий"} />}
-      {modal && <LessonModal open lesson={modal.lesson} report={modal.lesson?.status === "planned" && modal.lesson.starts_at < now} preset={{ student_id: studentId }} onClose={() => setModal(null)} />}
+      {modal && <LessonModal open lesson={modal.lesson} report={!!modal.lesson && (modal.lesson.status === "done" || (modal.lesson.status === "planned" && modal.lesson.starts_at < now))} preset={{ student_id: studentId }} onClose={() => setModal(null)} />}
     </div>
   );
 }
@@ -77,7 +95,7 @@ export function TopicsTab({ studentId, readOnly }: { studentId: string; readOnly
   const { db, insert, update, remove } = useStore();
   const confirm = useConfirm();
   const [open, setOpen] = useState<string | null>(null);
-  const [view, setView] = useState<"list" | "map">("list");
+  const [view, setView] = useState<"list" | "map">("map");
   const assigned = db.student_courses.filter((c) => c.student_id === studentId);
   const topics = studentTopicList(db, studentId);
   const pr = progress(db, studentId);
@@ -133,28 +151,10 @@ export function TopicsTab({ studentId, readOnly }: { studentId: string; readOnly
               ))}
             </div>
           </Card>
-          <div className="flex justify-end"><Segmented value={view} onChange={setView} options={[{ id: "list", label: "Список" }, { id: "map", label: "Карта" }]} /></div>
+          <div className="flex justify-end"><Segmented value={view} onChange={setView} options={[{ id: "map", label: "Карта" }, { id: "list", label: "Список" }]} /></div>
 
           {view === "map" ? (
-            <Card>
-              {[...new Set(topics.map((t) => t.section))].map((sec) => (
-                <div key={sec} className="mb-3">
-                  <div className="mb-1.5 text-xs font-semibold text-graphite">{sec}</div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {topics.filter((t) => t.section === sec).map((t) => {
-                      const st = topicStatus(db, studentId, t.id);
-                      const sc = scores.get(t.id);
-                      return (
-                        <div key={t.id} title={`${t.name}: ${TOPIC_STATUS[st].label}${sc ? `, ${Math.round(sc.avg)}%` : ""}`}
-                          className={`rounded-md px-2 py-1.5 text-xs font-medium ${TOPIC_STATUS[st].cell}`}>
-                          {t.name}{sc ? ` · ${Math.round(sc.avg)}%` : ""}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </Card>
+            <CourseChart studentId={studentId} />
           ) : (
             [...new Set(topics.map((t) => `${t.course_id}|${t.section}`))].map((key) => {
               const [cid, sec] = key.split("|");
@@ -353,7 +353,7 @@ export function PaymentsTab({ studentId, readOnly }: { studentId: string; readOn
           {lg.activeSub ? (
             <>
               <div className="text-2xl font-semibold">{lg.activeSub.left} из {lg.activeSub.sub.lessons_total}</div>
-              <div className={`text-xs ${lg.activeSub.left <= 1 ? "text-amber-600" : "text-graphite"}`}>осталось занятий · до {fmtDate(lg.activeSub.sub.expires_at)}</div>
+              <div className={`text-xs ${lg.activeSub.left <= 1 ? "text-ink" : "text-graphite"}`}>осталось занятий · до {fmtDate(lg.activeSub.sub.expires_at)}</div>
             </>
           ) : <div className="mt-1 text-sm text-graphite">Нет действующего абонемента</div>}
         </div>
@@ -441,7 +441,7 @@ export function NotesTab({ studentId }: { studentId: string }) {
         </div>
         <ul className="mt-3 space-y-2">
           {notes.map((n) => (
-            <li key={n.id} className="group rounded-lg bg-amber-50 p-3 text-sm">
+            <li key={n.id} className="group rounded-lg bg-mist p-3 text-sm">
               <div className="flex items-start gap-2">
                 <p className="flex-1 whitespace-pre-line">{n.text}</p>
                 <button type="button" className="text-graphite hover:text-signal" aria-label="Удалить"
@@ -454,6 +454,48 @@ export function NotesTab({ studentId }: { studentId: string }) {
           ))}
         </ul>
       </Card>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------- Материалы занятий (для ученика)
+
+export function MaterialsTab({ studentId }: { studentId: string }) {
+  const { db } = useStore();
+  const [q, setQ] = useState("");
+  const lessons = db.lessons
+    .filter((l) => l.student_id === studentId && (l.attachments ?? []).length > 0)
+    .sort((a, b) => b.starts_at.localeCompare(a.starts_at));
+  const needle = q.trim().toLowerCase();
+  const shown = lessons
+    .map((l) => ({ l, topics: topicNames(db, l.topic_ids), files: l.attachments ?? [] }))
+    .map((x) => ({
+      ...x,
+      files: needle && !x.topics.join(" ").toLowerCase().includes(needle) ? x.files.filter((f) => f.name.toLowerCase().includes(needle)) : x.files,
+    }))
+    .filter((x) => x.files.length > 0);
+  const total = lessons.reduce((n, l) => n + (l.attachments?.length ?? 0), 0);
+  if (!lessons.length)
+    return <Empty icon="folder" title="Материалов пока нет" text="После занятий здесь появятся код с занятия, конспекты и ссылки, чтобы повторить тему." />;
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="min-w-[220px] flex-1"><SearchInput value={q} onChange={setQ} placeholder="Тема или имя файла" /></div>
+        <span className="num text-sm text-graphite">{total} {plural(total, "файл", "файла", "файлов")} · {lessons.length} {plural(lessons.length, "занятие", "занятия", "занятий")}</span>
+      </div>
+      {shown.length ? (
+        <ol className="divide-y divide-line border-y border-ink bg-paper">
+          {shown.map(({ l, topics, files }) => (
+            <li key={l.id} className="grid gap-x-6 gap-y-2 px-4 py-4 sm:grid-cols-[7rem_minmax(0,1fr)]">
+              <span className="num pt-0.5 text-sm text-graphite">{fmtDate(l.starts_at)}</span>
+              <div className="min-w-0">
+                <div className="mb-2 font-semibold">{topics.join(", ") || "Занятие"}</div>
+                <Attachments value={files} readOnly bare />
+              </div>
+            </li>
+          ))}
+        </ol>
+      ) : <Empty icon="search" title="Ничего не нашлось" text="Измените запрос: поиск идёт по темам занятий и именам файлов." />}
     </div>
   );
 }

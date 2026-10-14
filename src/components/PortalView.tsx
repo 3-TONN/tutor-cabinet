@@ -7,12 +7,13 @@ import { useStore } from "@/lib/store";
 import { homeworkStats, hwEffective, ledger, progress, topicNames } from "@/lib/logic";
 import { fmtDate, fmtTime, rub } from "@/lib/utils";
 import { Avatar, Button, Card, Empty, Progress, Select, Tabs } from "./ui";
-import { GradesTab, HomeworkTab, LessonsTab, PaymentsTab, TopicsTab } from "./student-tabs";
+import { GradesTab, HomeworkTab, LessonsTab, MaterialsTab, PaymentsTab, TopicsTab } from "./student-tabs";
+import { Attachments } from "./forms";
 import { Icon } from "./Icon";
 import { useTheme } from "./Providers";
 
-type Tab = "home" | "lessons" | "topics" | "grades" | "homework" | "payments";
-const TABS: Tab[] = ["home", "lessons", "topics", "grades", "homework", "payments"];
+type Tab = "home" | "materials" | "lessons" | "topics" | "grades" | "homework" | "payments";
+const TABS: Tab[] = ["home", "materials", "lessons", "topics", "grades", "homework", "payments"];
 
 // Открытая вкладка и выбранный ученик переживают обновление страницы (в пределах вкладки браузера)
 const remembered = (key: string) => {
@@ -67,7 +68,7 @@ export function PortalView({ studentIds, demo, onExit, exitLabel }: { studentIds
   return (
     <div className="min-h-screen">
       {demo && (
-        <div className="no-print sticky top-0 z-40 flex items-center justify-center gap-3 bg-amber-100 px-4 py-2 text-sm text-amber-900">
+        <div className="no-print sticky top-0 z-40 flex items-center justify-center gap-3 bg-mist px-4 py-2 text-sm text-ink">
           <Icon name="eye" className="w-4 h-4" />Так видит кабинет ученик или родитель
           <button type="button" className="font-semibold underline" onClick={onExit}>{exitLabel}</button>
         </div>
@@ -91,7 +92,7 @@ export function PortalView({ studentIds, demo, onExit, exitLabel }: { studentIds
         </header>
 
         <Tabs<Tab> value={tab} onChange={setTab} tabs={[
-          { id: "home", label: "Главное" }, { id: "lessons", label: "Расписание" }, { id: "topics", label: "Прогресс" },
+          { id: "home", label: "Главное" }, { id: "materials", label: "Материалы" }, { id: "lessons", label: "Расписание" }, { id: "topics", label: "Прогресс" },
           { id: "grades", label: "Оценки" }, { id: "homework", label: "Домашние задания" }, { id: "payments", label: "Оплата" },
         ]} />
         <div className="mt-4">
@@ -143,6 +144,12 @@ export function PortalView({ studentIds, demo, onExit, exitLabel }: { studentIds
                   {lastDone.report_covered && <p className="text-sm"><b>Прошли:</b> {lastDone.report_covered}</p>}
                   {lastDone.report_homework && <p className="text-sm"><b>Задано:</b> {lastDone.report_homework}</p>}
                   {lastDone.comment && <p className="mt-1 text-sm italic text-graphite">{lastDone.comment}</p>}
+                  {(lastDone.attachments ?? []).length > 0 && (
+                    <div className="mt-4">
+                      <div className="mb-2 text-xs font-medium text-graphite">Материалы для повторения</div>
+                      <Attachments value={lastDone.attachments ?? []} readOnly />
+                    </div>
+                  )}
                 </Card>
               )}
             </div>
@@ -152,6 +159,7 @@ export function PortalView({ studentIds, demo, onExit, exitLabel }: { studentIds
           {tab === "grades" && <GradesTab studentId={s.id} readOnly />}
           {tab === "homework" && <HomeworkTab studentId={s.id} readOnly />}
           {tab === "payments" && <PaymentsTab studentId={s.id} readOnly />}
+          {tab === "materials" && <MaterialsTab studentId={s.id} />}
         </div>
       </div>
     </div>

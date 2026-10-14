@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:#F3F4F6;color:#111827;font:15px/1.4 Onest,sans-serif;display:grid;grid-template-columns:240px 1fr}
+aside{background:#fff;border-right:1px solid #E5E7EB;padding:24px 14px}
+aside b{display:block;margin:0 10px 26px}
+aside a{display:block;padding:9px 12px;border-radius:8px;color:#4B5563}
+aside a.on{background:#EEF2FF;color:#4F46E5;font-weight:600}
+main{padding:30px 36px}
+h1{font:600 28px Onest;margin-bottom:22px}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+.card{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:18px}
+.card small{color:#6B7280}.card div{font:600 26px Onest;margin-top:6px}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #F3F4F6}
+.pill{background:#EEF2FF;color:#4F46E5;border-radius:20px;padding:2px 10px;font-size:13px}
+.bars{display:flex;gap:10px;align-items:flex-end;height:180px;margin-top:14px}
+.bars span{flex:1;background:#C7D2FE;border-radius:6px 6px 0 0}
+</style></head><body>
+<aside><b>Кабинет репетитора</b><a class="on">Главная</a><a>Расписание</a><a>Ученики</a><a>Программа</a><a>Контроль знаний</a><a>Домашние задания</a><a>Оплаты</a><a>Отчёты</a><a>Материалы</a></aside>
+<main><h1>Добрый день!</h1>
+<div class="kpi"><div class="card"><small>Получено в октябре</small><div>23 700 ₽</div></div><div class="card"><small>Ожидается</small><div>28 200 ₽</div></div><div class="card"><small>Занятий на неделе</small><div>11</div></div><div class="card"><small>Долги</small><div>3 000 ₽</div></div></div>
+<div class="grid"><div class="card"><b>Сегодня</b>
+<div class="row"><span>15:00 · Козлов Максим</span><span class="pill">Проведено</span></div>
+<div class="row"><span>17:00 · Петров Иван</span><span class="pill">Сейчас</span></div>
+<div class="row"><span>19:30 · Смирнова Анна</span><span class="pill">Запланировано</span></div>
+</div><div class="card"><b>Доход по месяцам</b><div class="bars"><span style="height:40%"></span><span style="height:65%"></span><span style="height:80%"></span><span style="height:55%"></span><span style="height:90%"></span></div></div></div>
+</main></body></html>

@@ -14,8 +14,8 @@ import { Icon, type IconName } from "./Icon";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 const variants: Record<Variant, string> = {
-  primary: "bg-ink text-paper hover:bg-ink/85 active:bg-ink/75",
-  secondary: "bg-transparent text-ink ring-1 ring-inset ring-ink/20 hover:ring-ink/60 hover:bg-mist",
+  primary: "bg-accent text-on-accent hover:bg-accent/90 active:bg-accent/80",
+  secondary: "bg-paper text-ink ring-1 ring-inset ring-ink/25 hover:ring-ink",
   ghost: "text-ink hover:bg-mist",
   danger: "bg-signal text-white hover:bg-signal/90",
 };
@@ -51,7 +51,7 @@ export function IconButton({ icon, label, className, ...p }: ButtonHTMLAttribute
 // ---------------------------------------------------------------- поля
 
 const fieldCls =
-  "w-full rounded-xl border border-transparent bg-mist px-3.5 py-2.5 text-base text-ink placeholder:text-graphite/80 transition-colors hover:border-line focus:border-ink focus:bg-surface focus:outline-none disabled:opacity-60";
+  "w-full rounded-xl border border-line bg-paper px-3.5 py-2.5 text-base text-ink placeholder:text-graphite transition-colors hover:border-ink/40 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/25 disabled:opacity-60";
 
 export const Input = ({ className, ...p }: InputHTMLAttributes<HTMLInputElement>) => <input {...p} className={cls(fieldCls, className)} />;
 export const Textarea = ({ className, ...p }: TextareaHTMLAttributes<HTMLTextAreaElement>) => <textarea rows={3} {...p} className={cls(fieldCls, "leading-relaxed", className)} />;
@@ -89,7 +89,7 @@ export function Card({ title, actions, children, className, padded = true, boxed
 }) {
   if (boxed)
     return (
-      <section className={cls("rounded-2xl border border-line bg-surface", className)}>
+      <section className={cls("rounded-2xl border border-line bg-paper", className)}>
         {(title || actions) && (
           <header className="flex items-center justify-between gap-2 px-5 pt-4">
             <h2 className="font-semibold">{title}</h2>
@@ -141,13 +141,14 @@ export function Stat({ label, value, sub, tone }: { label: string; value: ReactN
   return (
     <div className="bg-paper p-4 sm:p-5">
       <div className="text-sm text-graphite">{label}</div>
-      <div className={cls("num mt-2 text-2xl font-medium sm:text-[1.75rem] sm:leading-none", tone === "bad" && "text-signal")}>{value}</div>
+      <div className={cls("num mt-2 whitespace-nowrap text-2xl font-medium leading-none", tone === "bad" && "text-signal")}>{value}</div>
       {sub && <div className="mt-2 text-xs text-graphite">{sub}</div>}
     </div>
   );
 }
-export const StatRow = ({ children, className }: { children: ReactNode; className?: string }) => (
-  <div className={cls("grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line lg:grid-cols-4", className)}>{children}</div>
+/** Мозаика показателей на 1px-линиях. wide — 4 колонки на широком экране, иначе 2. */
+export const StatRow = ({ children, className, wide = true }: { children: ReactNode; className?: string; wide?: boolean }) => (
+  <div className={cls("grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line", wide && "lg:grid-cols-4", className)}>{children}</div>
 );
 
 export function Progress({ value, className }: { value: number; className?: string; color?: string }) {
@@ -161,12 +162,12 @@ export function Progress({ value, className }: { value: number; className?: stri
 
 export function Tabs<T extends string>({ tabs, value, onChange }: { tabs: { id: T; label: string; count?: number }[]; value: T; onChange: (v: T) => void }) {
   return (
-    <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0 no-print">
+    <div className="-mx-4 overflow-x-auto px-4 [mask-image:linear-gradient(to_right,black_88%,transparent)] sm:mx-0 sm:px-0 sm:[mask-image:none] no-print">
       <div role="tablist" className="inline-flex min-w-full gap-6 border-b border-line">
         {tabs.map((t) => (
           <button key={t.id} type="button" role="tab" aria-selected={value === t.id} onClick={() => onChange(t.id)}
             className={cls("-mb-px whitespace-nowrap border-b-2 py-3 text-sm font-medium transition-colors",
-              value === t.id ? "border-ink text-ink" : "border-transparent text-graphite hover:text-ink")}>
+              value === t.id ? "border-accent text-ink" : "border-transparent text-graphite hover:text-ink")}>
             {t.label}
             {t.count != null && <span className="num ml-1.5 text-xs text-graphite">{t.count}</span>}
           </button>
@@ -178,11 +179,11 @@ export function Tabs<T extends string>({ tabs, value, onChange }: { tabs: { id: 
 
 export function Segmented<T extends string>({ options, value, onChange }: { options: { id: T; label: string }[]; value: T; onChange: (v: T) => void }) {
   return (
-    <div className="inline-flex rounded-full bg-mist p-1">
+    <div className="inline-flex rounded-full bg-paper p-1 ring-1 ring-inset ring-line">
       {options.map((o) => (
         <button key={o.id} type="button" aria-pressed={value === o.id} onClick={() => onChange(o.id)}
-          className={cls("h-9 rounded-full px-4 text-sm font-medium transition-colors",
-            value === o.id ? "bg-ink text-paper" : "text-graphite hover:text-ink")}>
+          className={cls("h-9 whitespace-nowrap rounded-full px-3.5 text-sm font-medium transition-colors",
+            value === o.id ? "bg-accent text-on-accent" : "text-graphite hover:text-ink")}>
           {o.label}
         </button>
       ))}
@@ -217,8 +218,8 @@ export function Modal({ open, onClose, title, children, footer, wide }: { open: 
   }, [open, onClose]);
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center sm:p-6" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div role="dialog" aria-modal className={cls("flex max-h-[92vh] w-full flex-col rounded-t-3xl bg-surface sm:rounded-3xl sm:border sm:border-line", wide ? "sm:max-w-3xl" : "sm:max-w-lg")}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/35 sm:items-center sm:p-6" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <div role="dialog" aria-modal className={cls("glass glass-strong flex max-h-[92vh] w-full flex-col rounded-t-3xl sm:rounded-3xl", wide ? "sm:max-w-3xl" : "sm:max-w-lg")}>
         <header className="flex items-center justify-between gap-2 px-6 pb-2 pt-5">
           <h3 className="text-xl font-bold tracking-tight">{title}</h3>
           <IconButton icon="x" label="Закрыть" onClick={onClose} />
@@ -340,7 +341,7 @@ export function MultiPick({ options, value, onChange, placeholder = "Не выб
 
 export function Table({ head, children, className }: { head: ReactNode[]; children: ReactNode; className?: string }) {
   return (
-    <div className={cls("overflow-x-auto", className)}>
+    <div className={cls("overflow-x-auto bg-paper", className)}>
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-ink text-left text-xs text-graphite">

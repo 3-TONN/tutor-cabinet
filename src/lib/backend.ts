@@ -17,7 +17,7 @@ export interface Backend {
   remove(table: TableName, ids: string[]): Promise<void>;
   clearAll(): Promise<void>;
   upload(file: File): Promise<Attachment>;
-  fileUrl(a: Attachment): Promise<string>;
+  fileUrl(a: Attachment, download?: boolean): Promise<string>;
 }
 
 // ---------------------------------------------------------------- Supabase
@@ -113,16 +113,23 @@ export class SupabaseBackend implements Backend {
   }
 
   async upload(file: File): Promise<Attachment> {
-    const safe = file.name.replace(/[^\wа-яА-ЯёЁ.\-]+/g, "_");
-    const path = `${this.user.id}/${uid()}-${safe}`;
-    const { error } = await supabase().storage.from("files").upload(path, file);
+    // Supabase Storage принимает в ключе только латиницу, цифры и часть знаков — кириллица и
+    // пробелы дают «Invalid key». Поэтому файл хранится как <uuid>.<расширение>, а исходное
+    // имя остаётся в карточке материала и подставляется при скачивании.
+    const ext = (file.name.match(/\.([A-Za-z0-9]{1,10})$/)?.[1] ?? "").toLowerCase();
+    const path = `${this.user.id}/${uid()}${ext ? `.${ext}` : ""}`;
+    const { error } = await supabase().storage.from("files").upload(path, file, {
+      contentType: file.type || undefined,
+      upsert: false,
+    });
     if (error) throw new Error(error.message);
     return { name: file.name, path };
   }
 
-  async fileUrl(a: Attachment) {
+  async fileUrl(a: Attachment, download = false) {
     if (a.url) return a.url;
-    const { data, error } = await supabase().storage.from("files").createSignedUrl(a.path!, 3600);
+    // download — ссылка «скачать» с исходным (в том числе русским) именем файла
+    const { data, error } = await supabase().storage.from("files").createSignedUrl(a.path!, 3600, download ? { download: a.name } : undefined);
     if (error) throw new Error(error.message);
     return data.signedUrl;
   }

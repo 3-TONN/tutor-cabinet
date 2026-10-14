@@ -54,6 +54,7 @@ export function CodeViewer({ attachment, onClose }: { attachment: Attachment; on
   const { backend } = useStore();
   const [text, setText] = useState<string | null>(null);
   const [href, setHref] = useState("");
+  const [downloadHref, setDownloadHref] = useState("");
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   useEffect(() => {
@@ -63,6 +64,7 @@ export function CodeViewer({ attachment, onClose }: { attachment: Attachment; on
         const u = await backend!.fileUrl(attachment);
         if (!alive) return;
         setHref(u);
+        setDownloadHref(await backend!.fileUrl(attachment, true));
         const res = await fetch(u);
         if (!res.ok) throw new Error(`Файл не открылся (код ${res.status}). Скачайте его кнопкой ниже.`);
         const t = await res.text();
@@ -82,7 +84,7 @@ export function CodeViewer({ attachment, onClose }: { attachment: Attachment; on
       footer={<>
         {text != null && <span className="num mr-auto self-center text-xs text-graphite">{lines.length} строк</span>}
         {text != null && <Button variant="secondary" icon={copied ? "check" : "copy"} onClick={async () => { await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1800); }}>{copied ? "Скопировано" : "Копировать код"}</Button>}
-        {href && <a href={href} download={attachment.name} target="_blank" rel="noreferrer"><Button icon="download">Скачать</Button></a>}
+        {downloadHref && <a href={downloadHref} download={attachment.name} target="_blank" rel="noreferrer"><Button icon="download">Скачать</Button></a>}
       </>}>
       {error ? <p className="text-sm text-signal">{error}</p> : text == null ? (
         <p className="num text-sm text-graphite">Загружаю файл…</p>
